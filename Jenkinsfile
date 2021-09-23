@@ -14,13 +14,9 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh "docker tag ${GIT_COMMIT} dtr.fintlabs.no/beta/information-model-documentation-portal:build.${BUILD_NUMBER}"
-                withDockerRegistry([credentialsId: 'dtr-fintlabs-no', url: 'https://dtr.fintlabs.no']) {
-                    sh "docker push dtr.fintlabs.no/beta/information-model-documentation-portal:build.${BUILD_NUMBER}"
-                }
-                sh "docker tag ${GIT_COMMIT} fintlabs.azurecr.io/information-model-documentation-portal:build.${BUILD_NUMBER}"
-                withDockerRegistry([credentialsId: 'fintlabs.azurecr.io', url: 'https://fintlabs.azurecr.io']) {
-                    sh "docker push fintlabs.azurecr.io/information-model-documentation-portal:build.${BUILD_NUMBER}"
+                sh "docker tag ${GIT_COMMIT} fintlabsacr.azurecr.io/information-model-documentation-portal:build.${BUILD_NUMBER}"
+                withDockerRegistry([credentialsId: 'fintlabsacr.azurecr.io', url: 'https://fintlabsacr.azurecr.io']) {
+                    sh "docker push fintlabsacr.azurecr.io/information-model-documentation-portal:build.${BUILD_NUMBER}"
                 }
             }
         }
