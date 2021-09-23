@@ -34,7 +34,7 @@
     "@angular/router": "^4.4.5",
     "angular-font-awesome": "^2.3.5",
     "chalk": "~2.1.0",
-    "core-js": "^2.5.1",
+    "core-js": "^2.6.12",
     "d3": "~4.11.0",
     "d3-scale-chromatic": "^1.1.1",
     "d3-selection-multi": "~1.0.1",
