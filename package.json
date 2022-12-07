@@ -38,7 +38,7 @@
     "d3": "~4.11.0",
     "d3-scale-chromatic": "^1.1.1",
     "d3-selection-multi": "~1.0.1",
-    "express": "~4.16.2",
+    "express": "~4.17.3",
     "font-awesome": "~4.7.0",
     "iconv-lite": "~0.4.19",
     "markdown-to-html-pipe": "~1.2.3",
