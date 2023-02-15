@@ -16,7 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_BUILDKIT: 1
-
+    outputs:
+      meta-tags: ${{ steps.meta.outputs.tags }}
     steps:
       - uses: actions/checkout@v3
 
@@ -46,9 +47,16 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  deploy-beta:
+    runs-on: ubuntu-latest
+    needs: publish-acr
+    environment: beta
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Get repo name
-        id: get_repo
-        run: echo "REPO=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
+          id: get_repo
+          run: echo "REPO=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
 
       - name: Set the target to beta cluster.
         uses: azure/aks-set-context@v1
@@ -63,6 +71,6 @@ jobs:
           manifests: |
             k8s/beta.yaml
           images: |
-            ${{ steps.meta.outputs.tags }}
+            ${{ needs.publish-acr.outputs.meta-tags }}
           namespace: default
           action: deploy
