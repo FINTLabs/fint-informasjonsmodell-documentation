@@ -5,6 +5,7 @@ on:
     branches:
       - master
     types: [closed]
+
   push:
     branches-ignore:
       - master
@@ -18,7 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        -
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -44,3 +45,4 @@ jobs:
           push: ${{ github.actor != 'dependabot[bot]' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+    
