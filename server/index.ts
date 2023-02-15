@@ -31,7 +31,7 @@ const EA_XMI_FILENAME = process.env.EA_XMI_FILENAME || 'FINT-informasjonsmodell.
  */
 export class Server {
   public app: Express.Express;
-  private port = parseInt(process.env.PORT || '3000');
+  private port = parseInt(process.env.PORT || '3000', 10);
   private clientPath = path.join(__dirname, './public');
 
 
@@ -189,7 +189,10 @@ ${chalk.green('**********************')}
   start(): Promise<http.Server> {
     return new Promise((resolve, reject) => {
       this.app.listen(this.port)  // Listen on provided port, on all network interfaces.
-        .on('listening', () => { this.$onReady(); resolve(); })
+        .on('listening', () => {
+          this.$onReady();
+          // resolve();
+        })
         .on('error', (error: any) => { this.$onServerInitError(error); reject(error); });
     });
   }

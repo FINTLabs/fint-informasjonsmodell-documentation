@@ -5,9 +5,9 @@ import { Classification } from './Classification';
 
 export abstract class EANodeContainer extends EANode {
   packagedElement: any;
-  extension: any;
+  declare extension: any;
 
-  protected _id: string;
+  declare protected _id: string;
   get id(): string {
     if (!this._id) { this._id = this.cleanId('package_' + this.name); }
     return this._id;

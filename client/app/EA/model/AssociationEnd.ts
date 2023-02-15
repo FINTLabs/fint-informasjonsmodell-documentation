@@ -1,4 +1,4 @@
-import {MarkdownToHtmlPipe} from 'markdown-to-html-pipe';
+import {MarkdownToHtmlPipe} from '../mapper/MarkdownToHtml.pipe';
 import {EALinkBase} from './EALinkBase';
 import {EABaseClass} from './EABaseClass';
 

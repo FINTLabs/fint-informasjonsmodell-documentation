@@ -2,7 +2,7 @@
 
 import { TestBed, async, inject } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
+// import { HttpModule } from '@angular/http';
 // import { MaterialModule } from '@angular/material';
 
 // import { LibSharedModule } from 'fint-shared-components';
@@ -15,7 +15,7 @@ describe('Service: ModelService', () => {
     TestBed.configureTestingModule({
       imports: [
         BrowserModule,
-        HttpModule,
+        // HttpModule,
         // MaterialModule,
         // LibSharedModule
       ],

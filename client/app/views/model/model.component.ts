@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeStyle, Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 
 import * as D3 from 'app/d3.bundle';
 import {forceRectCollide} from './util/ForceRectCollide';
@@ -25,10 +25,10 @@ export interface ILegendItem {
   xmiId: string;
   name: string;
   pkg: EANodeContainer;
-  fill: SafeStyle,
-  active: boolean,
-  colors: string[],
-  parent: string
+  fill: SafeStyle;
+  active: boolean;
+  colors: string[];
+  parent: string;
 }
 
 @Component({
@@ -223,7 +223,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     // Setup force directed simulation
     this.simulation = D3.forceSimulation<EANode>(this.nodeElements)
     // Apply link force
-      .force('link', D3.forceLink(allLinks).id((l: EALinkBase) => l.xmiId).strength(0.3)
+      .force('link', D3.forceLink(allLinks).id((l: any) => l.xmiId).strength(0.3)
         .distance((l: EALinkBase) => { // larger distance for bigger groups:
           const n1: EANode = l.source, n2: EANode = l.target;
           return n1.parentPackage === n2.parentPackage ? 10 : 50;
@@ -408,7 +408,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
       // Click event
-      .on('click', d => this.clicked(d))
+      .on('click', (e, d) => this.clicked(e, d))
       // Drag handling
       .call(this.nodeDragBehaviour());
 
@@ -540,7 +540,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     {name: 'Arv', type: 'generalization'},
     {name: 'Relasjon', type: 'association'},
   ];
-  colorSchemes = ['Blues', 'Oranges', 'Greens', 'Purples', 'Greys', 'Reds', 'Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool'];
+  // https://observablehq.com/@d3/color-schemes
+  colorSchemes = ['Blues', 'Oranges', 'Greens', 'Purples', 'Greys', 'Reds', 'BuGn', 'BuPu', 'OrRd'];
 
   get legendVisible() {
     return this.state.legendVisible;
@@ -673,8 +674,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   hullDragBehaviour() {
     // d.fx & d.fy = fixed coords. If these are set, the element will not move from it's position
     return D3.drag()
-      .on('start', (d: any) => {
-        D3.event.sourceEvent.stopPropagation(); // silence other listeners
+      .on('start', (event: any, d: any) => {
+        event.sourceEvent.stopPropagation(); // silence other listeners
         D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
           .each((d: any) => {
             d.fx = null;
@@ -682,10 +683,10 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
           }); // Unset fixed coords
         this.simulation.stop();
       })
-      .on('drag', (d: any) => {
-        const nodeGroup = parseInt(d.key);
-        const dx = D3.event.dx; // change in x coordinates relative to the previous drag
-        const dy = D3.event.dy; // change in y coordinates relative to the previous drag
+      .on('drag', (event: any, d: any) => {
+        const nodeGroup = parseInt(d.key, 10);
+        const dx = event.dx; // change in x coordinates relative to the previous drag
+        const dy = event.dy; // change in y coordinates relative to the previous drag
         D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
           .attrs({
             'cx': (n: any) => {
@@ -718,8 +719,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     [].forEach.call(document.querySelectorAll('svg path.hull'), elm => this.removeClass(elm, 'spotlight'));
   }
 
-  clicked(d: EANode) {
-    if (D3.event.defaultPrevented) return;
+  clicked(event: any, d: EANode) {
+    if (event.defaultPrevented) return;
     return d instanceof Classification ? this.router.navigate(['/docs', d.id], {queryParams: this.modelService.queryParams}) : null;
   }
 
@@ -734,24 +735,24 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // d.fx & d.fy = fixed coords. If these are set, the element will not move from it's position
     return D3.drag()
-      .on('start', (d: any) => {
+      .on('start', (event: any, d: any) => {
         vx = 0;
         vy = 0;
-        sx = D3.event.x;
-        sy = D3.event.y;
+        sx = event.x;
+        sy = event.y;
         offsetX = (px = sx) - (d.fx = d.x);
         offsetY = (py = sy) - (d.fy = d.y);
       })
-      .on('drag', (d: any) => {
-        vx = D3.event.x - px;
-        vy = D3.event.y - py;
-        d.fx = Math.max(Math.min((px = D3.event.x) - offsetX, this.width - d.width), 0);  // Fix x pos
-        d.fy = Math.max(Math.min((py = D3.event.y) - offsetY, this.height - d.height), 0); // Fix y pos
+      .on('drag', (event: any, d: any) => {
+        vx = event.x - px;
+        vy = event.y - py;
+        d.fx = Math.max(Math.min((px = event.x) - offsetX, this.width - d.width), 0);  // Fix x pos
+        d.fy = Math.max(Math.min((py = event.y) - offsetY, this.height - d.height), 0); // Fix y pos
         this.simulation.restart(); // Allow simulation to run slowly while we drag
       })
-      .on('end', (d: any) => {
-        if (sx === D3.event.x && sy === D3.event.y) {
-          return this.clicked(d);
+      .on('end', (event: any, d: any) => {
+        if (sx === event.x && sy === event.y) {
+          return this.clicked(event, d);
         } // Mouse hasn't moved. This should be a click event.
         const vScalingFactor = this.maxVelocity / Math.max(Math.sqrt(vx * vx + vy * vy), this.maxVelocity);
         if (!this.isSticky) {

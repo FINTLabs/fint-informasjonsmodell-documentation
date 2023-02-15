@@ -30,7 +30,7 @@ mat-card {
 }
 
 mat-card-header {
-  /deep/ .mat-card-header-text {
+  .mat-card-header-text {
     width: 100%;
   }
   mat-card-subtitle:first-child {
@@ -72,7 +72,7 @@ mat-card-header {
   margin-left: 2rem;
   mat-chip-list {
     display: inline;
-    /deep/ .mat-chip-list-wrapper {
+    .mat-chip-list-wrapper {
       display: inline;
     }
     mat-chip {
@@ -87,7 +87,7 @@ section h3 {
   margin-bottom: 0;
 }
 
-mat-card-content /deep/ {
+mat-card-content {
   h1 {
     font-size: 120%;
   }
@@ -149,7 +149,7 @@ table {
 }
 
 // Details styling
-/deep/ {
+
   .details {
     border-radius: $extra-rounded;
     padding: 0.5rem;
@@ -164,7 +164,7 @@ table {
   app-details .details {
     background: rgba(white, 0.5);
   }
-}
+
 
 td.details {
   border-radius: 5px 0 5px 5px;

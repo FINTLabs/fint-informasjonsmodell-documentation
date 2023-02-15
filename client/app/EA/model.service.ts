@@ -1,12 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Http, Response } from '@angular/http';
-import { Observable, Observer, ReplaySubject } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/catch';
-import 'rxjs/observable/of';
-import 'rxjs/observable/empty';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, throwError, catchError, tap, map, empty } from 'rxjs';
 
 // import { FintDialogService } from 'fint-shared-components';
 
@@ -107,7 +102,7 @@ export class ModelService {
    *
    * @memberOf ModelService
    */
-  constructor(protected http: Http, protected sanitizer: DomSanitizer) {
+  constructor(protected http: HttpClient,  protected sanitizer: DomSanitizer) {
     EABaseClass.service = this;
   }
 
@@ -116,28 +111,32 @@ export class ModelService {
   }
 
   fetchVersions(): Observable<any> {
-    this.fetchLatest().subscribe(ver => {
+    this.fetchLatest().subscribe((ver: string) => {
       this.defaultVersion = ver;
       if (!this.version) { this.version = this.defaultVersion; }
     });
-    return this.http.request('/api/doc/versions')
-      .map(res => {
-        const map = res.json();
-        return (Array.isArray(map) ? map : console.error(map));
-      })
-      .catch(error => this.handleError(error));
+
+    return this.http.get('/api/doc/versions')
+      .pipe(
+        // map(res => {
+        //   const map = res.json();
+        //   return (Array.isArray(map) ? map : console.error(map));
+        // }),
+        catchError(error => this.handleError(error))
+      );
   }
 
-  fetchLatest(): Observable<string> {
-    return this.http.request('/api/doc/latest')
-      .map(res => res.text())
-      .catch(error => this.handleError(error));
+  fetchLatest() {
+    return this.http.get('/api/doc/latest', {responseType: 'text'})
+      .pipe(
+        catchError(error => this.handleError(error))
+      );
 }
 
   fetchBranches(): Observable<any> {
-    return this.http.request('/api/doc/branches')
-      .map(res => res.json())
-      .catch(error => this.handleError(error));
+    return this.http.get('/api/doc/branches').pipe(
+      catchError(error => this.handleError(error))
+    );
   }
 
   createModelPromise(): Promise<any> {
@@ -160,29 +159,30 @@ export class ModelService {
     // me.isLoading = true;
     if (!me.modelObservable) {
       if (!this.version) {
-        return Observable.empty();
+        return empty();
       }
-      me.modelObservable = me.http.request(`/api/doc/${this.version}`)
-        .map(function (res: Response) {
-          let contentType = res.headers.get('content-type');
+      const sanitizer = this.sanitizer;
+      me.modelObservable = me.http.request('GET', `/api/doc/${this.version}`).pipe(
+        map(function (res: Response) {
+          let contentType = 'text/json; charset=utf-8'; // res.headers.get('content-type');
           contentType = contentType.substr(0, contentType.indexOf(';'));
           switch (contentType) {
-            case 'text/json': me.mapper = new JSON_XMI21_Mapper(res.json(), this.sanitizer); break;
-            default: me.mapper = new XMLMapper(res.text()); break;
+            case 'text/json': me.mapper = new JSON_XMI21_Mapper(res, sanitizer); break;
+            default: me.mapper = new XMLMapper(res); break;
           }
           try {
             me._nodeCache = [];
             me.modelData = me.mapper.parse();
-            me.modelObservable = Observable.of(me.modelData);
+            me.modelObservable = of(me.modelData);
             setTimeout(() => me.modelResolve());
             return me.modelData;
           } catch (ex) {
             console.error(ex);
             me.modelReject();
           }
-        })
-        .share()
-        .catch(error => this.handleError(error));
+        }),
+        catchError(error => this.handleError(error))
+      );
     }
     return me.modelObservable;
   }
@@ -307,7 +307,7 @@ export class ModelService {
 
   handleError(error: any) {
     // this.fintDialog.displayHttpError(error);
-    return Observable.throw(error);
+    return throwError(error);
   }
 
   cleanDocumentation(docs): string {

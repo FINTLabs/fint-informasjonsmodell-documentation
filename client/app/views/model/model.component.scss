@@ -1,5 +1,6 @@
 @import "../../../variables";
 
+/*
 ::host section {
   display: block;
   width: 100%;
@@ -9,7 +10,7 @@
     width: 100%;
     height: 100%;
   }
-}
+}*/
 
 .legend {
   overflow: auto;
@@ -20,7 +21,7 @@
   font-size: 0.8rem;
   border: 1px solid #c4c4c4;
   border-radius: 0;
-  box-shadow: 0px 10px 11px -9px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 11px -9px rgba(0, 0, 0, 0.3);
   background: linear-gradient(to bottom, rgba($navbar-color, 1) 0, rgba($navbar-color, 0.5) 30px);
   border-top: 0;
   z-index: 1050;
@@ -29,7 +30,7 @@
     background: linear-gradient(to bottom, rgba($navbar-color, 1) 0, rgba($navbar-color, 1) 100%);
   }
   &.open {
-    box-shadow: 0px 10px 17px -6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 17px -6px rgba(0, 0, 0, 0.3);
   }
   header {
     display: block;
@@ -139,7 +140,7 @@
     }
     &.unstyled {
       border: 1px solid transparent;
-      padding: 0.25rem 0rem;
+      padding: 0.25rem 0;
       &:hover {
         border: 1px solid transparent !important;
         box-shadow: none !important;

@@ -2,7 +2,7 @@
   <mat-card [ngClass]="cssClass">
     <mat-card-header>
       <a [routerLink]="['/docs', classification.id]" [queryParams]="classification.queryParams" mat-card-avatar>
-        <fa name="{{classType}}"></fa>
+        <fa-icon class="{{classType}}"></fa-icon>
       </a>
       <mat-card-subtitle>{{ classification.parentPackage.packagePath }}</mat-card-subtitle>
       <mat-card-title>
@@ -10,7 +10,7 @@
           <span [innerHTML]="classification.name | highlight:searchStr"></span>
           <span *ngIf="classification.superType"
                 title="{{classification.name}} arver fra {{classification.superType.name}}">
-            <fa name="arrow-right"></fa>
+            <fa-icon icon="arrow-right"></fa-icon>
             <mat-chip *ngIf="classification.superType">
               <a [routerLink]="[ '/docs', classification.superType.id]" [queryParams]="classification.queryParams"
                  [innerHTML]="classification.superType.name | highlight:searchStr"></a>
@@ -27,12 +27,12 @@
 
     <mat-card-content>
       <div class="subtypes" *ngIf="classification.subTypes && classification.subTypes.length">
-        <mat-chip-list selectable="false">
+        <mat-chip-listbox selectable="false">
           <mat-chip *ngFor="let cls of classification.subTypes">
             <a [routerLink]="[ '/docs', cls.id]" [queryParams]="cls.queryParams"
                [innerHTML]="cls.name | highlight:searchStr"></a>
           </mat-chip>
-        </mat-chip-list>
+        </mat-chip-listbox>
       </div>
 
       <app-details *ngIf="classification.documentationBody.length > 0">
@@ -61,10 +61,10 @@
           <tr
             [ngClass]="{hasDetailsBody: attribute.documentationBody.length > 0, hasDetails: attribute.documentationHeader.length > 0, isOpen: attribute.isOpen}">
             <td class="dropdown" (click)="openAttribute(attribute)">
-              <fa *ngIf="attribute.documentationHeader.length > 0" class="toggleMobileDetails"
-                  [name]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa>
-              <fa *ngIf="attribute.documentationBody.length > 0" class="toggleDetailBody"
-                  [name]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa>
+              <fa-icon *ngIf="attribute.documentationHeader.length > 0" class="toggleMobileDetails"
+                  [icon]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
+              <fa-icon *ngIf="attribute.documentationBody.length > 0" class="toggleDetailBody"
+                  [icon]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
             </td>
             <td class="{{attribute.deprecated ? 'deprecated name' : 'name'}}"
                 [innerHTML]="attribute.name | highlight:searchStr" (click)="openAttribute(attribute)"></td>
@@ -77,7 +77,7 @@
                 (click)="openAttribute(attribute)">{{ attribute.multiplicity }}
             </td>
             <td class="{{attribute.deprecated ? 'deprecated writable' : 'writable'}}">
-              <fa name="check" fw="true" *ngIf="attribute.writable === true"></fa>
+              <fa-icon name="check" fw="true" *ngIf="attribute.writable === true"></fa-icon>
             </td>
             <td class="description"
                 (click)="openAttribute(attribute)">
@@ -112,10 +112,10 @@
           <tr
             [ngClass]="{hasDetailsBody: association.end.documentationBody.length > 0, hasDetails: association.end.documentationHeader.length > 0, isOpen: association.isOpen}">
             <td class="dropdown" (click)="openAssociation(association)">
-              <fa *ngIf="association.end.documentationHeader.length > 0" class="toggleMobileDetails"
-                  [name]="association.isOpen ? 'caret-down' : 'caret-right'"></fa>
-              <fa *ngIf="association.end.documentationBody.length > 0" class="toggleDetailBody"
-                  [name]="association.isOpen ? 'caret-down' : 'caret-right'"></fa>
+              <fa-icon *ngIf="association.end.documentationHeader.length > 0" class="toggleMobileDetails"
+                  [icon]="association.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
+              <fa-icon *ngIf="association.end.documentationBody.length > 0" class="toggleDetailBody"
+                  [icon]="association.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
             </td>
             <td class="{{associationDeprecated(association) ? 'deprecated name' : 'name'}}"
                 [innerHTML]="association.end.label | highlight:searchStr" (click)="openAssociation(association)"></td>

@@ -4,9 +4,8 @@ import { TestBed, async } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 // import { MaterialModule } from '@angular/material';
-
 // import { LibSharedModule } from 'fint-shared-components';
 
 import { RouterTestingModule } from '@angular/router/testing';
@@ -20,7 +19,7 @@ describe('AppComponent', () => {
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         // MaterialModule,
         // LibSharedModule,
         RouterTestingModule

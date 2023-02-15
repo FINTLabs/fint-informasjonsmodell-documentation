@@ -17,8 +17,9 @@ export class Stereotype extends Package {
   width: number = 0;
   height: number = 0;
 
+  // @ts-ignore
   protected _isVisible: boolean;
-  protected _lastSearch: string;
+  declare protected _lastSearch: string;
   public isVisible(): boolean {
     const str = EABaseClass.service.searchString;
     if (str && str.length > 0) {

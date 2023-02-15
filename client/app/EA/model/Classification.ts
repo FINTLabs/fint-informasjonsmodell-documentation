@@ -1,4 +1,4 @@
-import {MarkdownToHtmlPipe} from 'markdown-to-html-pipe';
+import {MarkdownToHtmlPipe} from '../mapper/MarkdownToHtml.pipe';
 
 import {EABaseClass} from './EABaseClass';
 import {EANode} from './EANode';
@@ -10,13 +10,14 @@ export class Classification extends EANode {
   static markPipe = new MarkdownToHtmlPipe();
   static umlId = 'uml:Class';
 
-  xmiId: string;
+  declare xmiId: string;
   referredBy: any[];
   generalization: any;
   ownedAttribute: Attribute[];
   isAbstract;
 
-  _id;
+  declare _id;
+  isActive: any;
   get id(): string {
     if (!this._id) {
       const pkgName = (this.parentPackage ? this.parentPackage.name : '');

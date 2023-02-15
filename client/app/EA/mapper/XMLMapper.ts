@@ -6,12 +6,13 @@ export class XMLMapper implements IMapper {
   modelRoot: Model;
   flatModel: { [key: string]: any } = {};
 
-  constructor(modelData: string) {
+  constructor(modelData: any) {
     this.xml = new DOMParser().parseFromString(modelData, 'application/xml');
   }
 
   parse(): Model {
-    const context = (this.xml.ownerDocument == null ? this.xml.documentElement : this.xml.ownerDocument.documentElement);
+    // @ts-ignore
+    const context = this.xml.ownerDocument == null ? this.xml.documentElement : this.xml.ownerDocument.documentElement;
     const nsResolver = this.xml.createNSResolver(context);
     const xpathResult = document.evaluate('//uml:Model', this.xml, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
     let index = -1;

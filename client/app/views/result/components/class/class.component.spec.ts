@@ -8,14 +8,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 // import { MaterialModule } from '@angular/material';
 
-import { Observable } from 'rxjs/Rx';
+import { of } from 'rxjs';
 
 // import { LibSharedModule } from 'fint-shared-components';
 
 import { InViewService } from '../../in-view.service';
 
 import { DetailsComponent } from '../../details/details.component';
-import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
 
 import { ClassComponent } from './class.component';
 import { Classification } from 'app/EA/model/Classification';
@@ -31,8 +30,7 @@ describe('ClassComponent', () => {
         CommonModule,
         // MaterialModule,
         // LibSharedModule,
-        RouterTestingModule,
-        MarkdownToHtmlModule
+        RouterTestingModule
       ],
       declarations: [ TestComponentWrapper, ClassComponent, DetailsComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -40,8 +38,8 @@ describe('ClassComponent', () => {
         InViewService,
         {
           provide: ActivatedRoute, useValue: {
-            params: Observable.of({ id: 'test' }),
-            queryParams: Observable.of({s: ''})
+            params: of({ id: 'test' }),
+            queryParams: of({s: ''})
           }
         }
       ]
