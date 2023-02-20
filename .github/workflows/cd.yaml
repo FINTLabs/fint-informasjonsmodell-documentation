@@ -83,3 +83,5 @@ jobs:
             ${{ steps.meta.outputs.tags }}
           namespace: default
           action: deploy
+          strategy: basic
+          pull-images: false
