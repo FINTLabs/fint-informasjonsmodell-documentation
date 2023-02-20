@@ -16,8 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_BUILDKIT: 1
-    outputs:
-      meta-tags: ${{ steps.meta.outputs.tags }}
     steps:
       - uses: actions/checkout@v3
 
@@ -65,12 +63,23 @@ jobs:
           cluster-name: ${{ vars.BETA_CLUSTER_NAME }}
           resource-group: ${{ vars.BETA_CLUSTER_RESOURCE_GROUP }}
 
+      - name: Docker meta
+          id: meta
+          uses: docker/metadata-action@v4
+          with:
+            images: fintlabsacr.azurecr.io/${{ github.event.repository.name }}
+            tags: |
+              type=ref,event=branch,suffix=-{{sha}}
+              type=ref,event=pr,suffix=-{{sha}}
+              type=sha,prefix={{date 'YYYY-MM-DD-'}},enable={{is_default_branch}}
+              type=raw,value=latest,enable={{is_default_branch}}
+
       - name: Deploy to beta
         uses: azure/k8s-deploy@v3.1
         with:
           manifests: |
             k8s/beta.yaml
           images: |
-            ${{ needs.publish-acr.outputs.meta-tags }}
+            ${{ steps.meta.outputs.tags }}
           namespace: default
           action: deploy
