@@ -2,7 +2,7 @@
   <mat-card [ngClass]="cssClass">
     <mat-card-header>
       <a [routerLink]="['/docs', classification.id]" [queryParams]="classification.queryParams" mat-card-avatar>
-        <fa-icon class="{{classType}}"></fa-icon>
+        <fa-icon [icon]=classType></fa-icon>
       </a>
       <mat-card-subtitle>{{ classification.parentPackage.packagePath }}</mat-card-subtitle>
       <mat-card-title>
