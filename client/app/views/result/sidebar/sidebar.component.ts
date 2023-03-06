@@ -4,6 +4,7 @@ import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 
 import { Stereotype } from 'app/EA/model/Stereotype';
 import {fromEvent} from 'rxjs';
+import {throttleTime} from 'rxjs/dist/types';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,7 +19,7 @@ export class SidebarComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.onScrollSubscription = fromEvent(window, 'scroll')
-      // todo: skal denne være med? .throttleTime(200)
+      .pipe(throttleTime(200))
       .subscribe(e => this.checkElementInView());
   }
 
