@@ -22,6 +22,9 @@ mat-card {
   &.codelist { // Codelist is deprecated
     background-color: $codelist-color;
   }
+  &.abstract {
+    background-color: #f4f4f4;
+  }
   &.selected {
     border-color: darken($border-color, 20%);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
@@ -30,7 +33,7 @@ mat-card {
 }
 
 mat-card-header {
-  .mat-card-header-text {
+  ::ng-deep .mat-mdc-card-header-text {
     width: 100%;
   }
   mat-card-subtitle:first-child {
@@ -41,8 +44,12 @@ mat-card-header {
     margin-top: 0.4rem;
   }
   mat-card-title {
+    fa-icon {
+      margin: 0 0.5rem;
+    }
     mat-chip {
-      display: inline;
+      display: inline-block;
+      font-size: 0.7em;
     }
     .type {
       font-weight: normal;
@@ -72,10 +79,11 @@ mat-card-header {
   margin-left: 2rem;
   mat-chip-list {
     display: inline;
-    .mat-chip-list-wrapper {
+    ::ng-deep .mat-mdc-chip-list-wrapper {
       display: inline;
     }
     mat-chip {
+      font-size: 0.8em;
       padding: 1px 8px;
       margin-left: 0;
       margin-right: 5px;
@@ -87,7 +95,7 @@ section h3 {
   margin-bottom: 0;
 }
 
-mat-card-content {
+mat-card-content ::ng-deep {
   h1 {
     font-size: 120%;
   }
@@ -150,9 +158,16 @@ table {
 
 // Details styling
 
+::ng-deep {
   .details {
+    fa-icon {
+      float:left;
+      margin-right: 5px;
+    }
+
     border-radius: $extra-rounded;
     padding: 0.5rem;
+    margin-top: 0.5rem;
     background: $details-background;
     summary, header {
       cursor: pointer;
@@ -164,7 +179,7 @@ table {
   app-details .details {
     background: rgba(white, 0.5);
   }
-
+}
 
 td.details {
   border-radius: 5px 0 5px 5px;
