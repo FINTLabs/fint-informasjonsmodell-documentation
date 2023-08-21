@@ -721,7 +721,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
 
   clicked(event: any, d: EANode) {
     if (event.defaultPrevented) return;
-    return d instanceof Classification ? this.router.navigate(['/docs', d.id], {queryParams: this.modelService.queryParams}) : null;
+    return event instanceof Classification ? this.router.navigate(['/docs', event.id], {queryParams: this.modelService.queryParams}) : null;
   }
 
   /**
