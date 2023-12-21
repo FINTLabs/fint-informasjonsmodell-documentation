@@ -169,6 +169,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   private render() {
     const me = this;
 
+    console.log('Starter opp!')
+
     // Create container element
     this.host.html('');
     this.svg = this.host.append('svg')
@@ -269,9 +271,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   private renderHulls(nodes: EANode[]) {
     const hull = this.svg.select('g.hulls').selectAll('g.hull').data(this.createHullData(nodes), d => d.group);
 
-    // On new data, add hull path
-    const hullEnter = hull.enter();
-    const hullGroup = hullEnter.append('g').attr('class', 'hull')
+    const hullGroup = hull.enter().append('g').attr('class', 'hull');
     hullGroup.append('path')
       .attr('class', d => `hull ${this.modelService.cleanId(d.group)} ${d.classPath}`)
       .attr('d', d => this.hullCurve(d.path))
@@ -675,38 +675,49 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     // d.fx & d.fy = fixed coords. If these are set, the element will not move from it's position
     return D3.drag()
       .on('start', (event: any, d: any) => {
-        event.sourceEvent.stopPropagation(); // silence other listeners
-        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
-          .each((d: any) => {
-            d.fx = null;
-            d.fy = null;
+        console.log('start: ', event, d);
+
+        D3.selectAll(`g.nodes g.element.${event.group}, g.nodes g.element[class*="${event.classPath}"]`)
+          .each((n: any) => {
+            n.fx = null;
+            n.fy = null;
           }); // Unset fixed coords
         this.simulation.stop();
       })
       .on('drag', (event: any, d: any) => {
+        console.log('dragging, event.x=' + event.x + ', d.fx=' + d.fx);
+        console.log('drag: ', event, d.dx);
+        // const ev = D3.pointer(event);
+        console.log('drag: ev', this);
         const nodeGroup = parseInt(d.key, 10);
-        const dx = event.dx; // change in x coordinates relative to the previous drag
-        const dy = event.dy; // change in y coordinates relative to the previous drag
-        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
-          .attrs({
-            'cx': (n: any) => {
-              n.px = n.px + dx;
-              n.x = n.x + dx;
-              return n.x;
-            },
-            'cy': (n: any) => {
-              n.py = n.py + dy;
-              n.y = n.y + dy;
-              return n.y;
-            }
-          });
+        const dx = d.x; // change in x coordinates relative to the previous drag
+        const dy = d.y; // change in y coordinates relative to the previous drag
+        console.log('Group: ', event.group);
+        console.log('classPath', event.classPath);
+        D3.selectAll(`g.nodes g.element.${event.group}, g.nodes g.element[class*="${event.classPath}"]`)
+          .each((dd: any) => {
+            console.log('✨', dd);
+            dd.attrs = {
+              'cx': (n: any) => {
+                 n.px = n.px + dx;
+                 n.x = n.x + dx;
+                 return n.x;
+               },
+               'cy': (n: any) => {
+                 n.py = n.py + dy;
+                 n.y = n.y + dy;
+                 return n.y;
+               }
+            }});
         this.simulation.restart(); // Allow simulation to run slowly while we drag
       })
-      .on('end', (d: any) => {
-        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`).each((d: any) => {
-          d.fx = this.isSticky ? d.x : null; // Set or unset fixed x coords
-          d.fy = this.isSticky ? d.y : null; // Set or unset fixed x coords
-        });
+      .on('end', (event: any, d: any) => {
+        console.log('end: ', event, d);
+        D3.selectAll(`g.nodes g.element.${event.group}, g.nodes g.element[class*="${event.classPath}"]`)
+          .each((d: any) => {
+            d.fx = this.isSticky ? d.x : null; // Set or unset fixed x coords
+            d.fy = this.isSticky ? d.y : null; // Set or unset fixed x coords
+          });
         this.simulation.alpha(0.2).restart(); // Start the simulation with a low alpha so it will not bounce so much
       });
   }
@@ -721,7 +732,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
 
   clicked(event: any, d: EANode) {
     if (event.defaultPrevented) return;
-    return event instanceof Classification ? this.router.navigate(['/docs', event.id], {queryParams: this.modelService.queryParams}) : null;
+    return d instanceof Classification ? this.router.navigate(['/docs', d.id], {queryParams: this.modelService.queryParams}) : null;
   }
 
   /**
@@ -730,30 +741,23 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   nodeDragBehaviour() {
     let sx, sy; // Mouse X/Y coords from original 'start' event
     let vx, vy; // Delta movement (comparing current X/Y coords from original)
-    let px, py; // Current Mouse X/Y coords always
-    let offsetX, offsetY; // Offset between mouse X/Y coords and selected nodes X/Y coors
 
-    // d.fx & d.fy = fixed coords. If these are set, the element will not move from it's position
     return D3.drag()
-      .on('start', (event: any, d: any) => {
-        vx = 0;
-        vy = 0;
+      .on('start', function (event: any, d: any) {
         sx = event.x;
         sy = event.y;
-        offsetX = (px = sx) - (d.fx = d.x);
-        offsetY = (py = sy) - (d.fy = d.y);
+        vx = 0;
+        vy = 0;
       })
       .on('drag', (event: any, d: any) => {
-        vx = event.x - px;
-        vy = event.y - py;
-        d.fx = Math.max(Math.min((px = event.x) - offsetX, this.width - d.width), 0);  // Fix x pos
-        d.fy = Math.max(Math.min((py = event.y) - offsetY, this.height - d.height), 0); // Fix y pos
+        d.fx = event.x;
+        d.fy = event.y;
         this.simulation.restart(); // Allow simulation to run slowly while we drag
       })
       .on('end', (event: any, d: any) => {
         if (sx === event.x && sy === event.y) {
-          return this.clicked(event, d);
-        } // Mouse hasn't moved. This should be a click event.
+          return this.clicked(event, d); // Mouse hasn't moved. This should be a click event.
+        }
         const vScalingFactor = this.maxVelocity / Math.max(Math.sqrt(vx * vx + vy * vy), this.maxVelocity);
         if (!this.isSticky) {
           d.fx = null;
@@ -772,8 +776,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     if (elm) {
       if (elm.classList) {
         elm.classList.add(className);
-      }
-      else if (!(new RegExp('(\\s|^)' + className + '(\\s|$)').test(elm.getAttribute('class')))) {
+      } else if (!(new RegExp('(\\s|^)' + className + '(\\s|$)').test(elm.getAttribute('class')))) {
         elm.setAttribute('class', elm.getAttribute('class') + ' ' + className);
       }
     }
@@ -787,8 +790,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     if (elm) {
       if (elm.classList) {
         elm.classList.remove(className);
-      }
-      else {
+      } else {
         const removedClass = elm.getAttribute('class').replace(new RegExp('(\\s|^)' + className + '(\\s|$)', 'g'), '$2');
         if (new RegExp('(\\s|^)' + className + '(\\s|$)').test(elm.getAttribute('class'))) {
           elm.setAttribute('class', removedClass);
