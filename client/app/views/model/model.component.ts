@@ -383,7 +383,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     // Apply event handling
     nodeEnter
     // MouseOver
-      .on('mouseover', (c: EANode) => {
+      .on('mouseover', (event, c: EANode) => {
+        console.log(c);
         if (c instanceof Classification) {
           [].forEach.call(document.querySelectorAll('.source_' + c.xmiId), elm => {
             this.addClasses(elm, ['over', 'source']);
@@ -407,7 +408,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
       // MouseOut
-      .on('mouseout', (c: EANode) => {
+      .on('mouseout', (event, c: EANode) => {
         if (c instanceof Classification) {
           [].forEach.call(document.querySelectorAll('.source_' + c.xmiId + ', .target_' + c.xmiId), elm => {
             this.removeClasses(elm, ['over', 'source', 'target']);
