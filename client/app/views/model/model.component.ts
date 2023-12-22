@@ -384,7 +384,6 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     nodeEnter
     // MouseOver
       .on('mouseover', (event, c: EANode) => {
-        console.log(c);
         if (c instanceof Classification) {
           [].forEach.call(document.querySelectorAll('.source_' + c.xmiId), elm => {
             this.addClasses(elm, ['over', 'source']);
