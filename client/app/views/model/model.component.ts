@@ -543,7 +543,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   // LEGEND
   // ###########################################
   types = [
-    {name: 'Hoved klasse', type: 'mainclass'},
+    {name: 'Hovedklasse', type: 'mainclass'},
     {name: 'Kompleks datatype', type: 'class'},
     {name: 'Abstrakt', type: 'abstract'},
     {name: 'Referanse', type: 'referanse'},
@@ -554,7 +554,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     {name: 'Relasjon', type: 'association'},
   ];
   // https://observablehq.com/@d3/color-schemes
-  colorSchemes = ['Blues', 'Oranges', 'Greens', 'Purples', 'Greys', 'Reds', 'BuGn', 'BuPu', 'OrRd'];
+  colorSchemes = ['Blues', 'Oranges', 'Greens', 'Purples', 'Greys', 'Reds', 'RdPu', 'BuGn', 'BuPu', 'OrRd'];
 
   get legendVisible() {
     return this.state.legendVisible;
