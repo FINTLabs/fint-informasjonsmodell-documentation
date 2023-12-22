@@ -52,8 +52,11 @@ spec:
               path: /health
           resources:
             limits:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "2Gi"
+              cpu: "2"
+            requests:
+              memory: "2Gi"
+              cpu: "1"
           env:
             - name: TZ
               value: Europe/Oslo

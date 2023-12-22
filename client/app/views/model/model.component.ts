@@ -210,8 +210,6 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       .attr('in2', 'blurOut')
       .attr('mode', 'normal');
 
-    console.log('Starter opp 5!', defs);
-
     // Extract data to present
     const allLinks = this.modelService.getLinkNodes();
     this.nodeElements = this.modelService.getNodes(this.model.modelBase);
@@ -363,9 +361,10 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       .attr('ry', 5)
       .attr('width', (c: EANode) => { // Calculate the width of the rectangle based on the length of text it should display
         // Create a temp element using the text
-        const el = <SVGGElement> D3.select('svg.model.diagram').append('text').text(c.name).node();
+        const el = <SVGGElement> D3.select('svg.model.diagram').append('text')
+          .text(c.name).attr('font-size', 13).node();
         if (el) {
-          c.width = el.getBBox().width + 30;                        // Gets the calculated text size
+          c.width = el.getBBox().width + 20;                        // Gets the calculated text size
           el.remove ? el.remove() : el.parentNode.removeChild(el);  // Remove temp element, supporting IE
           return c.width;                                           // Return the calculated width
         }
@@ -378,7 +377,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     // Add the text
     nodeEnter.append('text').text((c: EANode) => c instanceof Classification ? c.name : ''/*`P:${c.name}`*/)
       .attr('x', 10)
-      .attr('y', 20);
+      .attr('y', 20)
+      .attr('font-size', 13);
 
     // Apply event handling
     nodeEnter
@@ -702,7 +702,6 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         const dy = event.dy; // change in y coordinates relative to the previous drag
         D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
           .each(function(dd: any) {
-            console.log('✨', dd);
             D3.select(this)
               .attr('cx', (n: any) => {
                 n.px = n.px + dx;
@@ -718,7 +717,6 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         this.simulation.restart(); // Allow simulation to run slowly while we drag
       })
       .on('end', (event: any, d: any) => {
-        console.log('end: ', event, d);
         D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
           .each((d: any) => {
             d.fx = this.isSticky ? d.x : null; // Set or unset fixed x coords
