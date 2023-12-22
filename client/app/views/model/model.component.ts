@@ -169,8 +169,6 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   private render() {
     const me = this;
 
-    console.log('Starter opp!')
-
     // Create container element
     this.host.html('');
     this.svg = this.host.append('svg')
@@ -184,24 +182,35 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       .data(['neutral', 'source', 'target'])
       .enter()
       .append('marker')
-      .attrs({
-        'id': m => 'arrow_' + m,
-        'class': m => m,
-        'refX': 6,
-        'refY': 6,
-        'markerWidth': 30,
-        'markerHeight': 30,
-        'orient': 'auto'
-      })
+      .attr('id', m => 'arrow_' + m)
+      .attr('class', m => m)
+      .attr('refX', 6)
+      .attr('refY', 6)
+      .attr('markerWidth', 30)
+      .attr('markerHeight', 30)
+      .attr('orient', 'auto')
       .append('path')
       .attr('d', 'M 0 0 12 6 0 12 3 6')
       .attr('class', 'arrowHead');
 
     // Define reusable drop shadow filter
-    const filter = defs.append('filter').attrs({'id': 'dropshadow'});
-    filter.append('feGaussianBlur').attrs({'in': 'SourceAlpha', 'stdDeviation': 2, 'result': 'offOut'});
-    filter.append('feOffset').attrs({'in': 'offOut', 'dx': 0, 'dy': 2, 'result': 'blurOut'});
-    filter.append('feBlend').attrs({'in': 'SourceGraphic', 'in2': 'blurOut', 'mode': 'normal'});
+    const filter = defs.append('filter')
+      .attr('id', 'dropshadow');
+    filter.append('feGaussianBlur')
+      .attr('in', 'SourceAlpha')
+      .attr('stdDeviation', 2)
+      .attr('result', 'offOut');
+    filter.append('feOffset')
+      .attr('in', 'offOut')
+      .attr('dx', 0)
+      .attr('dy', 2)
+      .attr('result', 'blurOut');
+    filter.append('feBlend')
+      .attr('in', 'SourceGraphic')
+      .attr('in2', 'blurOut')
+      .attr('mode', 'normal');
+
+    console.log('Starter opp 5!', defs);
 
     // Extract data to present
     const allLinks = this.modelService.getLinkNodes();
@@ -347,9 +356,12 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     nodeEnter.append('title').text((c: EANode) => (c instanceof Classification ? c.documentationHeader : ''));
 
     // Add a rectangle
-    nodeEnter.append('rect').attrs({
-      x: 0, y: 0, rx: 5, ry: 5,
-      width: (c: EANode) => { // Calculate the width of the rectangle based on the length of text it should display
+    nodeEnter.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('rx', 5)
+      .attr('ry', 5)
+      .attr('width', (c: EANode) => { // Calculate the width of the rectangle based on the length of text it should display
         // Create a temp element using the text
         const el = <SVGGElement> D3.select('svg.model.diagram').append('text').text(c.name).node();
         if (el) {
@@ -358,13 +370,15 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
           return c.width;                                           // Return the calculated width
         }
         return 0;
-      },
-      height: (c: EANode) => c.height
-    }).style('filter', c => c.isBaseClass ? 'url(#dropshadow)' : '')
+      })
+      .attr('height', (c: EANode) => c.height)
+      .style('filter', c => c.isBaseClass ? 'url(#dropshadow)' : '')
       .style('fill', c => this.isDeprecated(c) && '#fd9696'); // TODO: Can we get this color def from _variables.scss?
 
     // Add the text
-    nodeEnter.append('text').text((c: EANode) => c instanceof Classification ? c.name : ''/*`P:${c.name}`*/).attrs({x: 10, y: 20});
+    nodeEnter.append('text').text((c: EANode) => c instanceof Classification ? c.name : ''/*`P:${c.name}`*/)
+      .attr('x', 10)
+      .attr('y', 20);
 
     // Apply event handling
     nodeEnter
@@ -430,37 +444,36 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     this.svg.select('g.hulls').selectAll('path').data(this.createHullData(this.nodeElements)).attr('d', d => this.hullCurve(d.path));
 
     // Animate links
-    this.svg.select('g.links').selectAll('line').attrs((l: EALinkBase) => {
-      const source = this.createMatrix(l.source);
-      const target = this.createMatrix(l.target);
-      const offset = l instanceof Generalization ? 4 : 0;
+    this.svg.select('g.links').selectAll('line')
+      .each((l: EALinkBase, i, nodes) => {
+        const source = this.createMatrix(l.source);
+        const target = this.createMatrix(l.target);
+        const offset = l instanceof Generalization ? 4 : 0;
 
-      let x;
-      if (source.xLeft <= target.xRight && source.xRight >= target.xLeft) {
-        x = l.target.width / 2.0 + l.target.x;
-      }
-      else if (source.xLeft < target.xLeft) {
-        x = target.xLeft - offset;
-      }
-      else {
-        x = target.xRight + offset;
-      }
+        let x;
+        if (source.xLeft <= target.xRight && source.xRight >= target.xLeft) {
+          x = l.target.width / 2.0 + l.target.x;
+        } else if (source.xLeft < target.xLeft) {
+          x = target.xLeft - offset;
+        } else {
+          x = target.xRight + offset;
+        }
 
-      let y;
-      if (source.yTop <= target.yBottom && source.yBottom >= target.yTop) {
-        y = l.target.height / 2.0 + l.target.y - offset;
-      }
-      else if (source.yTop < target.yTop) {
-        y = l.target.y - offset;
-      }
-      else {
-        y = target.yBottom + offset;
-      }
-      return {
-        x1: source.xCenter, y1: source.yCenter,
-        x2: x, y2: y
-      }
-    })
+        let y;
+        if (source.yTop <= target.yBottom && source.yBottom >= target.yTop) {
+          y = l.target.height / 2.0 + l.target.y - offset;
+        } else if (source.yTop < target.yTop) {
+          y = l.target.y - offset;
+        } else {
+          y = target.yBottom + offset;
+        }
+
+        D3.select(nodes[i])
+          .attr('x1', source.xCenter)
+          .attr('y1', source.yCenter)
+          .attr('x2', x)
+          .attr('y2', y);
+      });
   }
 
   createMatrix(c: EANode) {
@@ -472,7 +485,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       yTop: c.y,
       yCenter: (c.height / 2) + c.y,
       yBottom: c.y + c.height,
-    }
+    };
   }
 
   // ###########################################
@@ -486,7 +499,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         hulls[pkg.xmiId] = hulls[pkg.xmiId].concat(hullData);
         concatParent(pkg, hulls[pkg.xmiId]);
       }
-    }
+    };
 
     // create point sets
     for (let k = 0; k < nodes.length; ++k) {
@@ -572,7 +585,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     const xmiId = pkg.xmiId;
     if (pkg.stereotype != null && this.legend.findIndex(l => l.xmiId === pkg.stereotype.xmiId) < 0) {
       // Make sure the stereotype exists
-      const col = this.createLegendItem(pkg.stereotype.name, pkg.stereotype.xmiId, pkg.stereotype, pkg.stereotype.xmiId, pkg.stereotype.xmiId);
+      const col = this.createLegendItem(pkg.stereotype.name, pkg.stereotype.xmiId, pkg.stereotype,
+        pkg.stereotype.xmiId, pkg.stereotype.xmiId);
       this.legend.push(col);
       this.colorsFlat.push(col);
     }
@@ -632,7 +646,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       colors: <string[]>[],
       parent: parent
-    }
+    };
   }
 
   private getColorFromPackageId(xmiId: string) {
@@ -675,9 +689,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     // d.fx & d.fy = fixed coords. If these are set, the element will not move from it's position
     return D3.drag()
       .on('start', (event: any, d: any) => {
-        console.log('start: ', event, d);
-
-        D3.selectAll(`g.nodes g.element.${event.group}, g.nodes g.element[class*="${event.classPath}"]`)
+        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
           .each((n: any) => {
             n.fx = null;
             n.fy = null;
@@ -685,35 +697,29 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         this.simulation.stop();
       })
       .on('drag', (event: any, d: any) => {
-        console.log('dragging, event.x=' + event.x + ', d.fx=' + d.fx);
-        console.log('drag: ', event, d.dx);
-        // const ev = D3.pointer(event);
-        console.log('drag: ev', this);
         const nodeGroup = parseInt(d.key, 10);
-        const dx = d.x; // change in x coordinates relative to the previous drag
-        const dy = d.y; // change in y coordinates relative to the previous drag
-        console.log('Group: ', event.group);
-        console.log('classPath', event.classPath);
-        D3.selectAll(`g.nodes g.element.${event.group}, g.nodes g.element[class*="${event.classPath}"]`)
-          .each((dd: any) => {
+        const dx = event.dx; // change in x coordinates relative to the previous drag
+        const dy = event.dy; // change in y coordinates relative to the previous drag
+        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
+          .each(function(dd: any) {
             console.log('✨', dd);
-            dd.attrs = {
-              'cx': (n: any) => {
-                 n.px = n.px + dx;
-                 n.x = n.x + dx;
-                 return n.x;
-               },
-               'cy': (n: any) => {
-                 n.py = n.py + dy;
-                 n.y = n.y + dy;
-                 return n.y;
-               }
-            }});
+            D3.select(this)
+              .attr('cx', (n: any) => {
+                n.px = n.px + dx;
+                n.x =  n.x + dx;
+                return n.x;
+              })
+              .attr('cy', (n: any) => {
+                n.py = n.py + dy;
+                n.y =  n.y + dy;
+                return n.y;
+              });
+          });
         this.simulation.restart(); // Allow simulation to run slowly while we drag
       })
       .on('end', (event: any, d: any) => {
         console.log('end: ', event, d);
-        D3.selectAll(`g.nodes g.element.${event.group}, g.nodes g.element[class*="${event.classPath}"]`)
+        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
           .each((d: any) => {
             d.fx = this.isSticky ? d.x : null; // Set or unset fixed x coords
             d.fy = this.isSticky ? d.y : null; // Set or unset fixed x coords
@@ -731,7 +737,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   clicked(event: any, d: EANode) {
-    if (event.defaultPrevented) return;
+    if (event.defaultPrevented) { return; };
     return d instanceof Classification ? this.router.navigate(['/docs', d.id], {queryParams: this.modelService.queryParams}) : null;
   }
 

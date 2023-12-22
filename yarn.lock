@@ -4273,7 +4273,7 @@ cycle@1.0.x:
   resolved "https://registry.yarnpkg.com/cycle/-/cycle-1.0.3.tgz#21e80b2be8580f98b468f379430662b046c34ad2"
   integrity sha512-TVF6svNzeQCOpjCqsy0/CSy8VgObG3wXusJ73xW2GbG5rGx7lC8zxDSURicsXI2UsGdi2L0QNRCi745/wUDvsA==
 
-d3-array@2, d3-array@^2.3.0, d3-array@^2.5, d3-array@^2.5.0:
+d3-array@2, d3-array@^2.3.0, d3-array@^2.5.0:
   version "2.12.1"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-2.12.1.tgz#e20b41aafcdffdf5d50928004ececf815a465e81"
   integrity sha512-B0ErZK/66mHtEsR1TkPEEkwdy+WDesimkM5gpZr5Dsg54BiTA5RXtYW5qTLIAcekaS9xfZrzBLF/OAkB3Qn1YQ==
@@ -4540,12 +4540,12 @@ d3-zoom@2:
     d3-selection "2"
     d3-transition "2"
 
-d3@6.0.0-rc.4:
-  version "6.0.0-rc.4"
-  resolved "https://registry.yarnpkg.com/d3/-/d3-6.0.0-rc.4.tgz#5ea1a1b1383cafd21050b5b39bfdda9dfdd6e05f"
-  integrity sha512-Wpu0Ibnx2O316I+eoeZtYoAITKALlQhrXsZdxH2TWDkPGkEHqwpwjwsIFtLEkTlKkBzPhMkvVYPROuB2HPpB7w==
+d3@6.7.0:
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-6.7.0.tgz#adac458597b4a2cafe8e08cf30948af0c95cd61f"
+  integrity sha512-hNHRhe+yCDLUG6Q2LwvR/WdNFPOJQ5VWqsJcwIYVeI401+d2/rrCjxSXkiAdIlpx7/73eApFB4Olsmh3YN7a6g==
   dependencies:
-    d3-array "^2.5"
+    d3-array "2"
     d3-axis "2"
     d3-brush "2"
     d3-chord "2"

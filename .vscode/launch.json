@@ -7,10 +7,7 @@
       "name": "Server",
       "preLaunchTask": "server:build",
       "cwd": "${workspaceRoot}",
-      "runtimeExecutable": "node_modules\\.bin\\nodemon",
-      "windows": {
-        "runtimeExecutable": "node_modules\\.bin\\nodemon.cmd"
-      },
+      "runtimeExecutable": "npx nodemon",
       "runtimeArgs": [
         "--debug=5858"
       ],
