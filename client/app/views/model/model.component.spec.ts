@@ -6,7 +6,7 @@ import { DebugElement } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 // import { MaterialModule } from '@angular/material';
 
@@ -26,7 +26,7 @@ describe('ModelComponent', () => {
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         // MaterialModule,
         // LibSharedModule,
         RouterTestingModule

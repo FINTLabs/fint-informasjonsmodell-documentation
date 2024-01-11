@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeStyle, Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 
 import * as D3 from 'app/d3.bundle';
 import {forceRectCollide} from './util/ForceRectCollide';
@@ -25,10 +25,10 @@ export interface ILegendItem {
   xmiId: string;
   name: string;
   pkg: EANodeContainer;
-  fill: SafeStyle,
-  active: boolean,
-  colors: string[],
-  parent: string
+  fill: SafeStyle;
+  active: boolean;
+  colors: string[];
+  parent: string;
 }
 
 @Component({
@@ -182,24 +182,33 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       .data(['neutral', 'source', 'target'])
       .enter()
       .append('marker')
-      .attrs({
-        'id': m => 'arrow_' + m,
-        'class': m => m,
-        'refX': 6,
-        'refY': 6,
-        'markerWidth': 30,
-        'markerHeight': 30,
-        'orient': 'auto'
-      })
+      .attr('id', m => 'arrow_' + m)
+      .attr('class', m => m)
+      .attr('refX', 6)
+      .attr('refY', 6)
+      .attr('markerWidth', 30)
+      .attr('markerHeight', 30)
+      .attr('orient', 'auto')
       .append('path')
       .attr('d', 'M 0 0 12 6 0 12 3 6')
       .attr('class', 'arrowHead');
 
     // Define reusable drop shadow filter
-    const filter = defs.append('filter').attrs({'id': 'dropshadow'});
-    filter.append('feGaussianBlur').attrs({'in': 'SourceAlpha', 'stdDeviation': 2, 'result': 'offOut'});
-    filter.append('feOffset').attrs({'in': 'offOut', 'dx': 0, 'dy': 2, 'result': 'blurOut'});
-    filter.append('feBlend').attrs({'in': 'SourceGraphic', 'in2': 'blurOut', 'mode': 'normal'});
+    const filter = defs.append('filter')
+      .attr('id', 'dropshadow');
+    filter.append('feGaussianBlur')
+      .attr('in', 'SourceAlpha')
+      .attr('stdDeviation', 2)
+      .attr('result', 'offOut');
+    filter.append('feOffset')
+      .attr('in', 'offOut')
+      .attr('dx', 0)
+      .attr('dy', 2)
+      .attr('result', 'blurOut');
+    filter.append('feBlend')
+      .attr('in', 'SourceGraphic')
+      .attr('in2', 'blurOut')
+      .attr('mode', 'normal');
 
     // Extract data to present
     const allLinks = this.modelService.getLinkNodes();
@@ -223,7 +232,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     // Setup force directed simulation
     this.simulation = D3.forceSimulation<EANode>(this.nodeElements)
     // Apply link force
-      .force('link', D3.forceLink(allLinks).id((l: EALinkBase) => l.xmiId).strength(0.3)
+      .force('link', D3.forceLink(allLinks).id((l: any) => l.xmiId).strength(0.3)
         .distance((l: EALinkBase) => { // larger distance for bigger groups:
           const n1: EANode = l.source, n2: EANode = l.target;
           return n1.parentPackage === n2.parentPackage ? 10 : 50;
@@ -269,9 +278,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   private renderHulls(nodes: EANode[]) {
     const hull = this.svg.select('g.hulls').selectAll('g.hull').data(this.createHullData(nodes), d => d.group);
 
-    // On new data, add hull path
-    const hullEnter = hull.enter();
-    const hullGroup = hullEnter.append('g').attr('class', 'hull')
+    const hullGroup = hull.enter().append('g').attr('class', 'hull');
     hullGroup.append('path')
       .attr('class', d => `hull ${this.modelService.cleanId(d.group)} ${d.classPath}`)
       .attr('d', d => this.hullCurve(d.path))
@@ -347,29 +354,36 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     nodeEnter.append('title').text((c: EANode) => (c instanceof Classification ? c.documentationHeader : ''));
 
     // Add a rectangle
-    nodeEnter.append('rect').attrs({
-      x: 0, y: 0, rx: 5, ry: 5,
-      width: (c: EANode) => { // Calculate the width of the rectangle based on the length of text it should display
+    nodeEnter.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('rx', 5)
+      .attr('ry', 5)
+      .attr('width', (c: EANode) => { // Calculate the width of the rectangle based on the length of text it should display
         // Create a temp element using the text
-        const el = <SVGGElement> D3.select('svg.model.diagram').append('text').text(c.name).node();
+        const el = <SVGGElement> D3.select('svg.model.diagram').append('text')
+          .text(c.name).attr('font-size', 13).node();
         if (el) {
-          c.width = el.getBBox().width + 30;                        // Gets the calculated text size
+          c.width = el.getBBox().width + 20;                        // Gets the calculated text size
           el.remove ? el.remove() : el.parentNode.removeChild(el);  // Remove temp element, supporting IE
           return c.width;                                           // Return the calculated width
         }
         return 0;
-      },
-      height: (c: EANode) => c.height
-    }).style('filter', c => c.isBaseClass ? 'url(#dropshadow)' : '')
+      })
+      .attr('height', (c: EANode) => c.height)
+      .style('filter', c => c.isBaseClass ? 'url(#dropshadow)' : '')
       .style('fill', c => this.isDeprecated(c) && '#fd9696'); // TODO: Can we get this color def from _variables.scss?
 
     // Add the text
-    nodeEnter.append('text').text((c: EANode) => c instanceof Classification ? c.name : ''/*`P:${c.name}`*/).attrs({x: 10, y: 20});
+    nodeEnter.append('text').text((c: EANode) => c instanceof Classification ? c.name : ''/*`P:${c.name}`*/)
+      .attr('x', 10)
+      .attr('y', 20)
+      .attr('font-size', 13);
 
     // Apply event handling
     nodeEnter
     // MouseOver
-      .on('mouseover', (c: EANode) => {
+      .on('mouseover', (event, c: EANode) => {
         if (c instanceof Classification) {
           [].forEach.call(document.querySelectorAll('.source_' + c.xmiId), elm => {
             this.addClasses(elm, ['over', 'source']);
@@ -393,7 +407,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
       // MouseOut
-      .on('mouseout', (c: EANode) => {
+      .on('mouseout', (event, c: EANode) => {
         if (c instanceof Classification) {
           [].forEach.call(document.querySelectorAll('.source_' + c.xmiId + ', .target_' + c.xmiId), elm => {
             this.removeClasses(elm, ['over', 'source', 'target']);
@@ -408,7 +422,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
       // Click event
-      .on('click', d => this.clicked(d))
+      .on('click', (e, d) => this.clicked(e, d))
       // Drag handling
       .call(this.nodeDragBehaviour());
 
@@ -430,37 +444,36 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     this.svg.select('g.hulls').selectAll('path').data(this.createHullData(this.nodeElements)).attr('d', d => this.hullCurve(d.path));
 
     // Animate links
-    this.svg.select('g.links').selectAll('line').attrs((l: EALinkBase) => {
-      const source = this.createMatrix(l.source);
-      const target = this.createMatrix(l.target);
-      const offset = l instanceof Generalization ? 4 : 0;
+    this.svg.select('g.links').selectAll('line')
+      .each((l: EALinkBase, i, nodes) => {
+        const source = this.createMatrix(l.source);
+        const target = this.createMatrix(l.target);
+        const offset = l instanceof Generalization ? 4 : 0;
 
-      let x;
-      if (source.xLeft <= target.xRight && source.xRight >= target.xLeft) {
-        x = l.target.width / 2.0 + l.target.x;
-      }
-      else if (source.xLeft < target.xLeft) {
-        x = target.xLeft - offset;
-      }
-      else {
-        x = target.xRight + offset;
-      }
+        let x;
+        if (source.xLeft <= target.xRight && source.xRight >= target.xLeft) {
+          x = l.target.width / 2.0 + l.target.x;
+        } else if (source.xLeft < target.xLeft) {
+          x = target.xLeft - offset;
+        } else {
+          x = target.xRight + offset;
+        }
 
-      let y;
-      if (source.yTop <= target.yBottom && source.yBottom >= target.yTop) {
-        y = l.target.height / 2.0 + l.target.y - offset;
-      }
-      else if (source.yTop < target.yTop) {
-        y = l.target.y - offset;
-      }
-      else {
-        y = target.yBottom + offset;
-      }
-      return {
-        x1: source.xCenter, y1: source.yCenter,
-        x2: x, y2: y
-      }
-    })
+        let y;
+        if (source.yTop <= target.yBottom && source.yBottom >= target.yTop) {
+          y = l.target.height / 2.0 + l.target.y - offset;
+        } else if (source.yTop < target.yTop) {
+          y = l.target.y - offset;
+        } else {
+          y = target.yBottom + offset;
+        }
+
+        D3.select(nodes[i])
+          .attr('x1', source.xCenter)
+          .attr('y1', source.yCenter)
+          .attr('x2', x)
+          .attr('y2', y);
+      });
   }
 
   createMatrix(c: EANode) {
@@ -472,7 +485,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       yTop: c.y,
       yCenter: (c.height / 2) + c.y,
       yBottom: c.y + c.height,
-    }
+    };
   }
 
   // ###########################################
@@ -486,7 +499,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
         hulls[pkg.xmiId] = hulls[pkg.xmiId].concat(hullData);
         concatParent(pkg, hulls[pkg.xmiId]);
       }
-    }
+    };
 
     // create point sets
     for (let k = 0; k < nodes.length; ++k) {
@@ -530,7 +543,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   // LEGEND
   // ###########################################
   types = [
-    {name: 'Hoved klasse', type: 'mainclass'},
+    {name: 'Hovedklasse', type: 'mainclass'},
     {name: 'Kompleks datatype', type: 'class'},
     {name: 'Abstrakt', type: 'abstract'},
     {name: 'Referanse', type: 'referanse'},
@@ -540,7 +553,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     {name: 'Arv', type: 'generalization'},
     {name: 'Relasjon', type: 'association'},
   ];
-  colorSchemes = ['Blues', 'Oranges', 'Greens', 'Purples', 'Greys', 'Reds', 'Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool'];
+  // https://observablehq.com/@d3/color-schemes
+  colorSchemes = ['Blues', 'Oranges', 'Greens', 'Purples', 'Greys', 'Reds', 'RdPu', 'BuGn', 'BuPu', 'OrRd'];
 
   get legendVisible() {
     return this.state.legendVisible;
@@ -571,7 +585,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     const xmiId = pkg.xmiId;
     if (pkg.stereotype != null && this.legend.findIndex(l => l.xmiId === pkg.stereotype.xmiId) < 0) {
       // Make sure the stereotype exists
-      const col = this.createLegendItem(pkg.stereotype.name, pkg.stereotype.xmiId, pkg.stereotype, pkg.stereotype.xmiId, pkg.stereotype.xmiId);
+      const col = this.createLegendItem(pkg.stereotype.name, pkg.stereotype.xmiId, pkg.stereotype,
+        pkg.stereotype.xmiId, pkg.stereotype.xmiId);
       this.legend.push(col);
       this.colorsFlat.push(col);
     }
@@ -631,7 +646,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       colors: <string[]>[],
       parent: parent
-    }
+    };
   }
 
   private getColorFromPackageId(xmiId: string) {
@@ -673,39 +688,40 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   hullDragBehaviour() {
     // d.fx & d.fy = fixed coords. If these are set, the element will not move from it's position
     return D3.drag()
-      .on('start', (d: any) => {
-        D3.event.sourceEvent.stopPropagation(); // silence other listeners
+      .on('start', (event: any, d: any) => {
         D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
-          .each((d: any) => {
-            d.fx = null;
-            d.fy = null;
+          .each((n: any) => {
+            n.fx = null;
+            n.fy = null;
           }); // Unset fixed coords
         this.simulation.stop();
       })
-      .on('drag', (d: any) => {
-        const nodeGroup = parseInt(d.key);
-        const dx = D3.event.dx; // change in x coordinates relative to the previous drag
-        const dy = D3.event.dy; // change in y coordinates relative to the previous drag
+      .on('drag', (event: any, d: any) => {
+        const nodeGroup = parseInt(d.key, 10);
+        const dx = event.dx; // change in x coordinates relative to the previous drag
+        const dy = event.dy; // change in y coordinates relative to the previous drag
         D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
-          .attrs({
-            'cx': (n: any) => {
-              n.px = n.px + dx;
-              n.x = n.x + dx;
-              return n.x;
-            },
-            'cy': (n: any) => {
-              n.py = n.py + dy;
-              n.y = n.y + dy;
-              return n.y;
-            }
+          .each(function(dd: any) {
+            D3.select(this)
+              .attr('cx', (n: any) => {
+                n.px = n.px + dx;
+                n.x =  n.x + dx;
+                return n.x;
+              })
+              .attr('cy', (n: any) => {
+                n.py = n.py + dy;
+                n.y =  n.y + dy;
+                return n.y;
+              });
           });
         this.simulation.restart(); // Allow simulation to run slowly while we drag
       })
-      .on('end', (d: any) => {
-        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`).each((d: any) => {
-          d.fx = this.isSticky ? d.x : null; // Set or unset fixed x coords
-          d.fy = this.isSticky ? d.y : null; // Set or unset fixed x coords
-        });
+      .on('end', (event: any, d: any) => {
+        D3.selectAll(`g.nodes g.element.${d.group}, g.nodes g.element[class*="${d.classPath}"]`)
+          .each((d: any) => {
+            d.fx = this.isSticky ? d.x : null; // Set or unset fixed x coords
+            d.fy = this.isSticky ? d.y : null; // Set or unset fixed x coords
+          });
         this.simulation.alpha(0.2).restart(); // Start the simulation with a low alpha so it will not bounce so much
       });
   }
@@ -718,8 +734,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     [].forEach.call(document.querySelectorAll('svg path.hull'), elm => this.removeClass(elm, 'spotlight'));
   }
 
-  clicked(d: EANode) {
-    if (D3.event.defaultPrevented) return;
+  clicked(event: any, d: EANode) {
+    if (event.defaultPrevented) { return; };
     return d instanceof Classification ? this.router.navigate(['/docs', d.id], {queryParams: this.modelService.queryParams}) : null;
   }
 
@@ -729,30 +745,23 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   nodeDragBehaviour() {
     let sx, sy; // Mouse X/Y coords from original 'start' event
     let vx, vy; // Delta movement (comparing current X/Y coords from original)
-    let px, py; // Current Mouse X/Y coords always
-    let offsetX, offsetY; // Offset between mouse X/Y coords and selected nodes X/Y coors
 
-    // d.fx & d.fy = fixed coords. If these are set, the element will not move from it's position
     return D3.drag()
-      .on('start', (d: any) => {
+      .on('start', function (event: any, d: any) {
+        sx = event.x;
+        sy = event.y;
         vx = 0;
         vy = 0;
-        sx = D3.event.x;
-        sy = D3.event.y;
-        offsetX = (px = sx) - (d.fx = d.x);
-        offsetY = (py = sy) - (d.fy = d.y);
       })
-      .on('drag', (d: any) => {
-        vx = D3.event.x - px;
-        vy = D3.event.y - py;
-        d.fx = Math.max(Math.min((px = D3.event.x) - offsetX, this.width - d.width), 0);  // Fix x pos
-        d.fy = Math.max(Math.min((py = D3.event.y) - offsetY, this.height - d.height), 0); // Fix y pos
+      .on('drag', (event: any, d: any) => {
+        d.fx = event.x;
+        d.fy = event.y;
         this.simulation.restart(); // Allow simulation to run slowly while we drag
       })
-      .on('end', (d: any) => {
-        if (sx === D3.event.x && sy === D3.event.y) {
-          return this.clicked(d);
-        } // Mouse hasn't moved. This should be a click event.
+      .on('end', (event: any, d: any) => {
+        if (sx === event.x && sy === event.y) {
+          return this.clicked(event, d); // Mouse hasn't moved. This should be a click event.
+        }
         const vScalingFactor = this.maxVelocity / Math.max(Math.sqrt(vx * vx + vy * vy), this.maxVelocity);
         if (!this.isSticky) {
           d.fx = null;
@@ -771,8 +780,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     if (elm) {
       if (elm.classList) {
         elm.classList.add(className);
-      }
-      else if (!(new RegExp('(\\s|^)' + className + '(\\s|$)').test(elm.getAttribute('class')))) {
+      } else if (!(new RegExp('(\\s|^)' + className + '(\\s|$)').test(elm.getAttribute('class')))) {
         elm.setAttribute('class', elm.getAttribute('class') + ' ' + className);
       }
     }
@@ -786,8 +794,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     if (elm) {
       if (elm.classList) {
         elm.classList.remove(className);
-      }
-      else {
+      } else {
         const removedClass = elm.getAttribute('class').replace(new RegExp('(\\s|^)' + className + '(\\s|$)', 'g'), '$2');
         if (new RegExp('(\\s|^)' + className + '(\\s|$)').test(elm.getAttribute('class'))) {
           elm.setAttribute('class', removedClass);

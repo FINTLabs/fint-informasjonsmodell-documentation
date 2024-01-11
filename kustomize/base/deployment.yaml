@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: informasjonsmodell-documentation
-          image: fintlabs.azurecr.io/information-model-documentation-portal:build.5
+          image: ghcr.io/fintlabs/fint-informasjonsmodell-documentation:latest
           ports:
             - containerPort: 3000
           readinessProbe:
@@ -34,15 +34,18 @@ spec:
               path: /health
           resources:
             limits:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "2Gi"
+              cpu: "2"
+            requests:
+              memory: "2Gi"
+              cpu: "1"
           env:
             - name: TZ
               value: Europe/Oslo
             - name: GITHUB_ORGANISATION
               value: FINTLabs
         - name: informasjonsmodell-documentation-metamodell
-          image: fintlabs.azurecr.io/information-model-documentation-portal:meta.2
+          image: fintlabsacr.azurecr.io/information-model-documentation-portal:meta.3
           ports:
             - containerPort: 3001
           readinessProbe:
@@ -53,8 +56,11 @@ spec:
               path: /health
           resources:
             limits:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "1Gi"
+              cpu: "500m"
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: TZ
               value: Europe/Oslo

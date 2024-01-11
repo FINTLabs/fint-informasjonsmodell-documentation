@@ -3,7 +3,7 @@ import {Classification} from './Classification';
 
 export class Association extends EALinkBase {
   static umlId = 'uml:Association';
-  parent: any;
+  declare parent: any;
   extension: any;
 
   isOpen = false;
@@ -21,8 +21,7 @@ export class Association extends EALinkBase {
       if (!this._lastClass) {
         start = true;
         this._lastClass = clas;
-      }
-      else {
+      } else {
         end = true;
         this._lastClass = null;
       }

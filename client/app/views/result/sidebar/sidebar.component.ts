@@ -1,8 +1,6 @@
 import { InViewService } from '../in-view.service';
-import { Observable, Subscription } from 'rxjs/Rx';
+import { Subscription, fromEvent, throttleTime } from 'rxjs';
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
-
-import { Stereotype } from 'app/EA/model/Stereotype';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,8 +14,8 @@ export class SidebarComponent implements AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit() {
-    this.onScrollSubscription = Observable.fromEvent(window, 'scroll')
-      .throttleTime(200)
+    this.onScrollSubscription = fromEvent(window, 'scroll')
+      .pipe(throttleTime(200))
       .subscribe(e => this.checkElementInView());
   }
 

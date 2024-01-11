@@ -1,4 +1,4 @@
-import { MarkdownToHtmlPipe } from 'markdown-to-html-pipe';
+import {MarkdownToHtmlPipe} from '../mapper/MarkdownToHtml.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { EABaseClass } from './EABaseClass';
 import { ExpandablePipe } from '../../views/result/pipes/expandable.pipe';
@@ -9,7 +9,7 @@ export class Attribute extends EABaseClass {
   static markPipe = new MarkdownToHtmlPipe()
 
   static umlId = 'uml:Property';
-  parent: any;
+  declare parent: any;
   classRef: string;
   extension: any;
   type: any;
@@ -133,7 +133,6 @@ export class Attribute extends EABaseClass {
       else if (this.extension && this.extension.properties && this.extension.properties.length) {
         this._typeName = this.extension.properties[0].type;
       }
-      else if (this.upperValue[0].xmiType === 'uml:LiteralInteger') { this._typeName = 'number'; }
     }
     return this._typeName;
   }

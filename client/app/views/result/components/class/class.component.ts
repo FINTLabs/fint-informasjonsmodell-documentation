@@ -1,6 +1,6 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, Renderer} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs/Rx';
+import {Subscription} from 'rxjs';
 import {Classification} from 'app/EA/model/Classification';
 import {AssociationEnd} from 'app/EA/model/AssociationEnd';
 
@@ -116,7 +116,7 @@ export class ClassComponent implements OnInit, OnDestroy {
     return this._attribs;
   }
 
-  constructor(private elm: ElementRef, private renderer: Renderer, private route: ActivatedRoute, private router: Router) {
+  constructor(private elm: ElementRef, private renderer: Renderer2, private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {

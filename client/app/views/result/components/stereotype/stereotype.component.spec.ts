@@ -1,15 +1,14 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By, DomSanitizer } from '@angular/platform-browser';
-import { DebugElement, Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { Http } from '@angular/http';
+// import { Http } from '@angular/http';
 import { CommonModule } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 // import { MaterialModule } from '@angular/material';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 // import { LibSharedModule, FintDialogService } from 'fint-shared-components';
 

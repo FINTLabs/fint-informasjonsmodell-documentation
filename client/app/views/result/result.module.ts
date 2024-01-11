@@ -2,15 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { MatCardModule, MatChipsModule } from '@angular/material';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 
 // import { LibSharedModule } from 'fint-shared-components';
-import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 import { InViewService } from './in-view.service';
 
 import { DetailsComponent } from './details/details.component';
-import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
+// import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
 import { HighlightPipe } from './pipes/highlight.pipe';
 import { ExpandablePipe } from './pipes/expandable.pipe';
 
@@ -24,14 +25,15 @@ import { ClassAbstract } from './pipes/class-abstract-sort.pipe';
 import { ClassMain } from './pipes/class-main-sort.pipe';
 import { ComplexDatatype } from './pipes/class-complesdatatype-sort.pipe';
 
+
 @NgModule({
   imports: [
     CommonModule,
     // MaterialModule,
     // LibSharedModule,
-    AngularFontAwesomeModule,
+    FontAwesomeModule,
     RouterModule,
-    MarkdownToHtmlModule,
+    // MarkdownToHtmlModule,
     MatCardModule,
     MatChipsModule
   ],

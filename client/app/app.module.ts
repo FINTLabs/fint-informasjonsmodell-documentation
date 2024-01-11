@@ -2,10 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule, Request } from '@angular/http';
 // import { MaterialModule } from '@angular/material';
-import { MatProgressSpinnerModule } from '@angular/material';
-import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard, faBars, faPuzzlePiece, faForward } from '@fortawesome/free-solid-svg-icons';
+import { HttpClientModule } from '@angular/common/http';
 
 // import { LibSharedModule } from 'fint-shared-components';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,20 +17,22 @@ import { ModelService } from './EA/model.service';
 import { AppComponent } from './app.component';
 import { ModelComponent } from './views/model/model.component';
 import { ModelStateService } from './views/model/model-state.service';
+import { MarkdownToHtmlPipe } from './EA/mapper/MarkdownToHtml.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ModelComponent
+    ModelComponent,
+    MarkdownToHtmlPipe
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     // MaterialModule,
     // LibSharedModule,
-    AngularFontAwesomeModule,
+    FontAwesomeModule,
     MatProgressSpinnerModule,
     AppRoutingModule,
     ResultModule
@@ -37,4 +40,9 @@ import { ModelStateService } from './views/model/model-state.service';
   providers: [ModelService, ModelStateService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard, faBars, faPuzzlePiece, faForward);
+  }
+}

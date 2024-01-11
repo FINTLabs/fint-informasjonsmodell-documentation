@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ElementRef, Renderer } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, Renderer2 } from '@angular/core';
 
 import { Package } from 'app/EA/model/Package';
 import { Stereotype } from 'app/EA/model/Stereotype';
@@ -10,11 +10,11 @@ import { Stereotype } from 'app/EA/model/Stereotype';
 })
 export class StereotypeComponent implements OnInit {
   @Input() stereotype: Package;
-  constructor(private elm: ElementRef, private renderer: Renderer) { }
+  constructor(private elm: ElementRef, private renderer: Renderer2) { }
 
   ngOnInit() {
     if (this.stereotype.packagedElement) {
-      this.renderer.setElementClass(this.elm.nativeElement, 'package-container', true);
+      this.renderer.addClass(this.elm.nativeElement, 'package-container');
     }
   }
 

@@ -1,5 +1,5 @@
 <section class="details">
-  <fa [name]="isOpen ? 'caret-down' : 'caret-right'"></fa>
+  <fa-icon [icon]="isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
   <div class="container">
     <div (click)="toggleOpen()">
       <ng-content select="header"></ng-content>
