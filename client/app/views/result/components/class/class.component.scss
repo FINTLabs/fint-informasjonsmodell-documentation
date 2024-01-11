@@ -4,6 +4,7 @@ mat-card {
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
   transition-property: border-color, box-shadow;
+  font-size: 14px;
   &.mainclass {
     background-color: $table-color;
   }
