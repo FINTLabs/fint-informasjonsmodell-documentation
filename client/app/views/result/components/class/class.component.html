@@ -77,7 +77,7 @@
                 (click)="openAttribute(attribute)">{{ attribute.multiplicity }}
             </td>
             <td class="{{attribute.deprecated ? 'deprecated writable' : 'writable'}}">
-              <fa-icon name="check" fw="true" *ngIf="attribute.writable === true"></fa-icon>
+              <fa-icon [icon]="'check'" fw="true" *ngIf="attribute.writable === true"></fa-icon>
             </td>
             <td class="description"
                 (click)="openAttribute(attribute)">

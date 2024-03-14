@@ -5,7 +5,10 @@ import { FormsModule } from '@angular/forms';
 // import { MaterialModule } from '@angular/material';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard, faBars, faPuzzlePiece, faForward } from '@fortawesome/free-solid-svg-icons';
+import {
+  faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard,
+  faBars, faPuzzlePiece, faForward, faCheck
+} from '@fortawesome/free-solid-svg-icons';
 import { HttpClientModule } from '@angular/common/http';
 
 // import { LibSharedModule } from 'fint-shared-components';
@@ -30,8 +33,6 @@ import { MarkdownToHtmlPipe } from './EA/mapper/MarkdownToHtml.pipe';
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    // MaterialModule,
-    // LibSharedModule,
     FontAwesomeModule,
     MatProgressSpinnerModule,
     AppRoutingModule,
@@ -43,6 +44,7 @@ import { MarkdownToHtmlPipe } from './EA/mapper/MarkdownToHtml.pipe';
 
 export class AppModule {
   constructor(library: FaIconLibrary) {
-    library.addIcons(faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard, faBars, faPuzzlePiece, faForward);
+    library.addIcons(faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard,
+      faBars, faPuzzlePiece, faForward, faCheck);
   }
 }
