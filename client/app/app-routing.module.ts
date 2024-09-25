@@ -11,7 +11,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, 
+      {
+        urlUpdateStrategy: 'eager',
+        canceledNavigationResolution: 'replace',
+        paramsInheritanceStrategy: 'always'
+      }
+    )
+  ],
   exports: [RouterModule],
   providers: []
 })

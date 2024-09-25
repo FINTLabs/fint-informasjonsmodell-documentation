@@ -61,7 +61,9 @@ export class JSON_XMI21_Mapper implements IMapper {
    * Adds a `get`ter property to any node
    */
   private addGetter(node: any, prop: string, ref: string) {
-    Object.defineProperty(node, prop, { get: () => this.flatModel[ref] });
+    if (!Object.prototype.hasOwnProperty.call(node, prop)) {
+      Object.defineProperty(node, prop, { get: () => this.flatModel[ref] });
+    }
   }
 
   /**

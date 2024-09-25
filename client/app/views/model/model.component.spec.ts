@@ -6,7 +6,7 @@ import { DebugElement } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 // import { MaterialModule } from '@angular/material';
 
@@ -22,18 +22,17 @@ describe('ModelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
+    declarations: [ModelComponent],
+    imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        FormsModule,
-        HttpClientModule,
-        // MaterialModule,
-        // LibSharedModule,
-        RouterTestingModule
-      ],
-      declarations: [ ModelComponent ],
-      providers: [ModelService, ModelStateService],
-    })
+        FormsModule,    
+        RouterTestingModule],
+    providers: [
+      ModelService, 
+      ModelStateService, provideHttpClient(withInterceptorsFromDi())
+    ]
+})
     .compileComponents();
   }));
 
