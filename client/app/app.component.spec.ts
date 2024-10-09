@@ -4,7 +4,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 // import { MaterialModule } from '@angular/material';
 // import { LibSharedModule } from 'fint-shared-components';
 
@@ -19,16 +19,11 @@ describe('AppComponent', () => {
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
-        HttpClientModule,
         // MaterialModule,
         // LibSharedModule,
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
-      providers: [ModelService],
-    });
+        RouterTestingModule],
+    providers: [ModelService, provideHttpClient(withInterceptorsFromDi())]
+});
     TestBed.compileComponents();
   });
 

@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import "variables";
-@import "styles/material.setup";
-@import "styles/document";
-@import "styles/table";
-@import "styles/svg";
+@use "variables";
+@use "styles/material.setup";
+@use "styles/document";
+@use "styles/table";
+@use "styles/svg";

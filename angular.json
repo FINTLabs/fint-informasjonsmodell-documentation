@@ -55,18 +55,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "fint-informasjonsmodell:build"
+            "buildTarget": "fint-informasjonsmodell:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "fint-informasjonsmodell:build:production"
+              "buildTarget": "fint-informasjonsmodell:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fint-informasjonsmodell:build"
+            "buildTarget": "fint-informasjonsmodell:build"
           }
         },
         "test": {
@@ -123,7 +123,6 @@
       }
     }
   },
-  "defaultProject": "fint-informasjonsmodell",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app"

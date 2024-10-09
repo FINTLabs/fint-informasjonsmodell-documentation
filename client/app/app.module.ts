@@ -9,7 +9,7 @@ import {
   faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard,
   faBars, faPuzzlePiece, faForward, faCheck
 } from '@fortawesome/free-solid-svg-icons';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 // import { LibSharedModule } from 'fint-shared-components';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,25 +22,27 @@ import { ModelComponent } from './views/model/model.component';
 import { ModelStateService } from './views/model/model-state.service';
 import { MarkdownToHtmlPipe } from './EA/mapper/MarkdownToHtml.pipe';
 
-@NgModule({
+@NgModule({ 
   declarations: [
-    AppComponent,
-    ModelComponent,
-    MarkdownToHtmlPipe
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-    FontAwesomeModule,
-    MatProgressSpinnerModule,
-    AppRoutingModule,
-    ResultModule
-  ],
-  providers: [ModelService, ModelStateService],
-  bootstrap: [AppComponent]
-})
+        AppComponent,
+        ModelComponent,
+        MarkdownToHtmlPipe
+    ],
+    bootstrap: [AppComponent], 
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        FontAwesomeModule,
+        MatProgressSpinnerModule,
+        AppRoutingModule,
+        ResultModule
+      ], 
+      providers: [
+        ModelService, 
+        ModelStateService, provideHttpClient(withInterceptorsFromDi())]
+    })
+
 
 export class AppModule {
   constructor(library: FaIconLibrary) {

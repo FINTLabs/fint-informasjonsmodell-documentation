@@ -1,13 +1,12 @@
-// NOTE: Theming is currently experimental and not yet publically released!
 @use '@angular/material' as mat;
+@use "variables";
 
 @include mat.core();
-@import "variables";
 
-$localPrimary:  mat.define-palette(mat.$indigo-palette);
-$localAccent:  mat.define-palette(mat.$amber-palette, A200, A100, A400);
+$localPrimary:  mat.m2-define-palette(mat.$m2-indigo-palette);
+$localAccent:  mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
 
-$theme: mat.define-light-theme((
+$theme: mat.m2-define-light-theme((
   color: (
     primary: $localPrimary,
     accent: $localAccent,

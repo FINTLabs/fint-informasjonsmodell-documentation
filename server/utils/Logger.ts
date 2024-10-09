@@ -24,23 +24,26 @@ export namespace Logger {
       timestamp: new Date().toISOString()
     });
   }
-  export let log = new winston.Logger({
+  export let log = winston.createLogger({
     transports: [
       new winston.transports.File({
         level: 'info',
         filename: './log/all-logs.log',
         handleExceptions: true,
-        json: false,
+        format: winston.format.combine(
+          winston.format.simple(),
+          winston.format.printf(formatter)
+        ),
         maxsize: 5242880, // 5MB
-        maxFiles: 5,
-        colorize: false,
-        formatter: formatter
+        maxFiles: 5
       }),
       new winston.transports.Console({
         level: 'debug',
         handleExceptions: true,
-        json: false,
-        colorize: true
+        format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.simple()
+        )
       })
     ],
     exitOnError: false
