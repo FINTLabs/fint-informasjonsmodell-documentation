@@ -3,7 +3,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ModelService } from 'app/EA/model.service';
 
 @Pipe({
-  name: 'highlight'
+    name: 'highlight',
+    standalone: false
 })
 export class HighlightPipe implements PipeTransform {
 

@@ -1,4 +1,5 @@
-@import "../../../variables";
+@use "sass:color";
+@use "../../../styles/variables" as *;
 
 /*
 ::host section {
@@ -72,7 +73,7 @@
   }
   ul {
     display: block;
-    border: 1px solid darken($border-color, 10%);
+    border: 1px solid color.scale($border-color, $lightness: -10%);
     border-radius: 4px;
     padding: 5px;
     margin: 5px;
@@ -134,8 +135,8 @@
     }
     &.mainclass, &.hovedklasse {
       background-color: $table-color;
-      font-weight: bold;
-      border-color: darken($border-color, 30%);
+      font-weight: 400;
+      border-color: color.scale($border-color, $lightness: -30%);
       box-shadow: 0 1px 3px black;
     }
     &.unstyled {

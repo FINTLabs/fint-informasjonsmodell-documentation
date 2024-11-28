@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'expandable'
+    name: 'expandable',
+    standalone: false
 })
 export class ExpandablePipe implements PipeTransform {
 

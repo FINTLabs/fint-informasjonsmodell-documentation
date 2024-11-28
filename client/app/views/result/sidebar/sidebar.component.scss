@@ -1,4 +1,6 @@
-@import "../../../../variables";
+@use "sass:color";
+@use "../../../../styles/variables" as *;
+
 :host {
   display: block;
   overflow-x: hidden;

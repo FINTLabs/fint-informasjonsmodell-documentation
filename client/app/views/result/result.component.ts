@@ -8,9 +8,10 @@ import { ModelService } from 'app/EA/model.service';
 import { Model } from 'app/EA/model/Model';
 
 @Component({
-  selector: 'app-result',
-  templateUrl: './result.component.html',
-  styleUrls: ['./result.component.scss']
+    selector: 'app-result',
+    templateUrl: './result.component.html',
+    styleUrls: ['./result.component.scss'],
+    standalone: false
 })
 export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
   model = null;

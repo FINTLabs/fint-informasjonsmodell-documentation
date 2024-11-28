@@ -1,7 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Classification } from '../../../EA/model/Classification';
 
-@Pipe({name: 'complexDatatype'})
+@Pipe({
+    name: 'complexDatatype',
+    standalone: false
+})
 export class ComplexDatatype implements PipeTransform {
   transform(array: Array<Classification>): Array<Classification> {
 

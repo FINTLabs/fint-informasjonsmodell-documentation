@@ -49,8 +49,9 @@ describe('StereotypeComponent', () => {
 
 
 @Component({
- selector  : 'test-cmp',
- template  : '<app-stereotype [stereotype]="stereotype"></app-stereotype>'
+    selector: 'test-cmp',
+    template: '<app-stereotype [stereotype]="stereotype"></app-stereotype>',
+    standalone: false
 })
 class TestComponentWrapper {
   stereotype = {
