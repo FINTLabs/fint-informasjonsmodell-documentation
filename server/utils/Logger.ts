@@ -1,8 +1,8 @@
 import * as winston from 'winston';
 import * as morgan from 'morgan';
+import { mkdirp } from 'mkdirp';
 
-const mkdirp = require('mkdirp');
-mkdirp('./log');
+mkdirp.sync('./log');
 
 /**
  * A custom logger factory which combines the `morgan` express logger middleware
