@@ -8,7 +8,7 @@ import { Classification } from '../../../EA/model/Classification';
 export class ClassAbstract implements PipeTransform {
   transform(array: Array<Classification>): Array<Classification> {
 
-    let result: Classification[] = new Array();
+    const result: Classification[] = [];
     array.forEach(clazz => {
       if (clazz.isAbstract === "true") {
         result.push(clazz);

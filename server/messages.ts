@@ -4,7 +4,7 @@ import chalk from 'chalk';
  * Human friendly error messages.
  * Because understanding is important!
  */
-export let ERROR_MESSAGES: any = {
+export const ERROR_MESSAGES: any = {
   EACCES: `${chalk.red.bold('Permission denied!')}
 
 ${chalk.cyan.underline('Tip:')}

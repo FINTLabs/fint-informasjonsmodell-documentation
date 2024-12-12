@@ -24,7 +24,7 @@ export namespace Logger {
       timestamp: new Date().toISOString()
     });
   }
-  export let log = winston.createLogger({
+  export const log = winston.createLogger({
     transports: [
       new winston.transports.File({
         level: 'info',
@@ -54,7 +54,7 @@ export namespace Logger {
    *
    * @type {{write: ((message:string)=>any)}}
    */
-  export let stream: morgan.StreamOptions = {
+  export const stream: morgan.StreamOptions = {
     write: function (message: string) {
       Logger.log.info(message);
     }
