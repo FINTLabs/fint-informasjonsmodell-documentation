@@ -47,7 +47,8 @@
     "serve-favicon": "^2.5.0",
     "winston": "^3.17.0",
     "xml2js": "^0.6.2",
-    "zone.js": "0.15.0"
+    "zone.js": "0.15.0",
+    "chalk": "^2.2.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "19.0.4",
@@ -67,7 +68,6 @@
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
-    "chalk": "^2.2.0",
     "concurrently": "^9.1.0",
     "eslint": "^8.56.0",
     "glob": "^10.3.10",
