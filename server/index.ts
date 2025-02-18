@@ -9,14 +9,16 @@ import * as Express from 'express';
 import * as request from 'request';
 
 // Express middlewares
-import * as favicon from 'serve-favicon';
 import * as morgan from 'morgan';
+import helmet from 'helmet';
+import { parse as contentTypeParser } from 'content-type';
 
 // Other
 import { Logger } from './utils/Logger';
 import { ERROR_MESSAGES } from './messages';
 import * as Iconv from 'iconv-lite';
 
+const favicon = require('serve-favicon');
 const xml2js = require('xml2js');
 const parser = new xml2js.Parser();
 
@@ -65,6 +67,32 @@ ${chalk.green('**********************')}
     // Setup ExpressJS application
     this.app = Express();
 
+    // Setup security middleware
+    this.app.use(helmet());  // Add Helmet security middleware
+  
+    // Strict content-type checking middleware
+    this.app.use((req, res, next) => {
+      const contentType = req.headers['content-type'];
+      if (!contentType) {
+        return next();
+      }
+      try {
+        contentTypeParser(contentType);
+        next();
+      } catch (e) {
+        return res.status(400).send('Invalid Content-Type header');
+      }
+    });
+
+    // Strict content-length checking middleware
+    this.app.use((req, res, next) => {
+      const len = req.headers['content-length'];
+      if (!len || /^\d+$/.test(len)) {
+        return next();
+      }
+      return res.status(400).send('Invalid Content-Length header');
+    });
+
     // Setup global middlewares
     this.app.use(morgan('combined', { stream: Logger.stream })); // Setup morgan access logger using winston
 
@@ -89,14 +117,16 @@ ${chalk.green('**********************')}
         headers: { 'User-Agent': 'NodeJS-Express', 'cache-control': 'no-cache' }
       };
       request(options, function (err, response, body) {
-        if (err) { Logger.log.error(err); res.status(500).send(err); }
-
+        if (err) {
+          Logger.log.error(err);
+          return res.status(500).send(err);
+        }
         const json = JSON.parse(body);
         if (json.name) {
-          res.send(json.name);
-        } else {
-          Logger.log.error(err); res.status(500).send(json);
+          return res.send(json.name);
         }
+        Logger.log.error(err);
+        return res.status(500).send(json);
       });
     });
 
@@ -108,14 +138,16 @@ ${chalk.green('**********************')}
         headers: { 'User-Agent': 'NodeJS-Express', 'cache-control': 'no-cache' }
       };
       request(options, function (err, response, body) {
-        if (err) { Logger.log.error(err); res.status(500).send(err); }
-
+        if (err) {
+          Logger.log.error(err);
+          return res.status(500).send(err);
+        }
         const json = JSON.parse(body);
         if (Array.isArray(json)) {
-          res.send(JSON.parse(body).map((r: any) => r.name));
-        } else {
-          Logger.log.error(err); res.status(500).send(json);
+          return res.send(JSON.parse(body).map((r: any) => r.name));
         }
+        Logger.log.error(err);
+        return res.status(500).send(json);
       });
     });
 
@@ -127,10 +159,13 @@ ${chalk.green('**********************')}
         headers: { 'User-Agent': 'NodeJS-Express', 'cache-control': 'no-cache' }
       };
       request(options, function (err, response, body) {
-        if (err) { Logger.log.error(err); res.status(500).send(err); }
+        if (err) {
+          Logger.log.error(err);
+          return res.status(500).send(err);
+        }
         const json = JSON.parse(body);
         if (Array.isArray(json)) {
-          res.send(JSON.parse(body)
+          return res.send(JSON.parse(body)
             .map((r: any) => r.name)
             .sort((a: string, b: string) => {
               const isARelease = a.substring(0, 'release'.length) === 'release';
@@ -144,14 +179,14 @@ ${chalk.green('**********************')}
             .filter((a: string) => {
               if (a === 'master') { return true; } // Include master branch
               if (a === 'develop') { return true; } // Include develop branch
-              if (a.substring(0, 'release'.length) === 'release') { return true; } // Include release brances
+              if (a.substring(0, 'release'.length) === 'release') { return true; } // Include release branches
               if (a.substring(0, 'feature'.length) === 'feature') { return true; } // Include feature branches
               return true; // For everything else
             })
           );
-        } else {
-          Logger.log.error(err); res.status(500).send(json);
         }
+        Logger.log.error(err);
+        return res.status(500).send(json);
       });
     });
 
@@ -159,20 +194,29 @@ ${chalk.green('**********************')}
     this.app.get('/api/doc/:version', function (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
       const url = `https://raw.githubusercontent.com/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/${req.params.version}/${EA_XMI_FILENAME}`;
 
-      Logger.log.info(url);
+      Logger.log.info("Fetching XMI-file: ", url);
 
       request({ url: url, encoding: null }, function (err, response, body) {
-        if (err) { Logger.log.error(err); res.status(500).send(err); }
-        if (!err && response.statusCode === 200) {
+        if (err) {
+          Logger.log.error(err);
+          return res.status(500).send(err);
+        }
+        if (response.statusCode === 200) {
           const xml = Iconv.decode(body, 'win-1252');
 
           // Map to JSON and return
           parser.parseString(xml, function (parseError: any, result: any) {
-            if (parseError) { Logger.log.error(parseError); res.status(500).send(parseError); }
+            if (parseError) {
+              Logger.log.error(parseError);
+              return res.status(500).send(parseError);
+            }
             res.header({ 'content-type': 'text/json; charset=utf-8' });
-            res.send(result);
+            return res.send(result);
           });
+        } else {
+          return res.status(response.statusCode).send('Error fetching content');
         }
+        return res.status(500).send('Error fetching content');
       });
     });
 
