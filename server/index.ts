@@ -68,8 +68,17 @@ ${chalk.green('**********************')}
     this.app = Express();
 
     // Setup security middleware
-    this.app.use(helmet());  // Add Helmet security middleware
-  
+    this.app.use(helmet({
+      contentSecurityPolicy: {
+        useDefaults: false,
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+          styleSrc: ["'self'", "'unsafe-inline'", "https:"]
+        }
+      }
+    }));
+
     // Strict content-type checking middleware
     this.app.use((req, res, next) => {
       const contentType = req.headers['content-type'];
