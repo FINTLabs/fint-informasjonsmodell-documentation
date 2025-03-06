@@ -10,9 +10,10 @@ interface AssociationMapper {
 }
 
 @Component({
-  selector: 'app-class',
-  templateUrl: './class.component.html',
-  styleUrls: ['./class.component.scss']
+    selector: 'app-class',
+    templateUrl: './class.component.html',
+    styleUrls: ['./class.component.scss'],
+    standalone: false
 })
 export class ClassComponent implements OnInit, OnDestroy {
   @Input() classification: Classification;

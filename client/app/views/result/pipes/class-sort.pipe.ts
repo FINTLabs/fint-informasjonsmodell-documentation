@@ -1,7 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Classification } from '../../../EA/model/Classification';
 
-@Pipe({name: 'classSort'})
+@Pipe({
+    name: 'classSort',
+    standalone: false
+})
 export class ClassSort implements PipeTransform {
   transform(array: Array<Classification>): Array<Classification> {
 

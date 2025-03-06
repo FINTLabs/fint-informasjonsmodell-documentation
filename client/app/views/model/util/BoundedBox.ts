@@ -1,5 +1,4 @@
 import * as D3 from 'app/d3.bundle';
-import constant from 'd3-force/src/constant';
 
 interface BoundedBoxForce<NodeDatum extends D3.SimulationNodeDatum> extends D3.Force<any, undefined> {
   // size?(size?: number): this;
@@ -18,6 +17,8 @@ export interface BoundaryBox<NodeDatum> {
 export function forceBoundedBox <NodeDatum extends D3.SimulationNodeDatum> (): BoundedBoxForce<NodeDatum> {
   let nodes, sizes;
   let bounds: BoundaryBox<NodeDatum>;
+  
+  const constant = (x: [number, number]) => () => x;
   let size: any = constant([0, 0]);
 
   const force: BoundedBoxForce<NodeDatum> = function () {

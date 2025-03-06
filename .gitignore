@@ -44,3 +44,5 @@ Thumbs.db
 *.log*
 /out/
 .angular/
+
+.dccache

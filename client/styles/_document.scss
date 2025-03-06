@@ -1,5 +1,5 @@
-@import "variables";
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@use "sass:color";
+@use "variables" as *;
 
 $body-background: #fcfcfc;
 html {
@@ -7,12 +7,12 @@ html {
 }
 body {
   font-family: 'Roboto', sans-serif;
-  color: $text-color;
+  color: color.scale($text-color, $lightness: -5%);
   position: relative;
   margin: 0; padding:0;
 }
 h1, h2, h3, h4, h5, h6 {
-  color: darken($text-color, 5%);
+  color: color.scale($text-color, $lightness: -5%);
 }
 h1 { font-size: 150%; }
 h2 { font-size: 130%; }
@@ -43,10 +43,10 @@ a {
   border-radius: 50%;
 
   &.success {
-    border-color: darken($success, 20%);
+    border-color: color.scale($success, $lightness: -20%);
   }
   &.warning {
-    border-color: darken($warning, 20%);
+    border-color: color.scale($warning, $lightness: -20%);
   }
 }
 

@@ -8,10 +8,9 @@
     "moduleResolution": "node",
     "outDir": "../dist/",
     "sourceMap": true,
-    "target": "es6",
-
-
-
+    "target": "es2022",
+    "lib": ["es2022"],
+    "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowUnreachableCode": false,
@@ -19,7 +18,8 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitUseStrict": false,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "types": ["node", "chalk"]
   },
   "exclude": [
     "node_modules"

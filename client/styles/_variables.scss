@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $novari-color-korall: #F76650;
 $novari-color-burgunder: #6B133D;
 $novari-color-beige: #F8ECDC;
@@ -10,10 +12,9 @@ $primary: #555;
 $accent: #cf202e;
 $text-color: #333;
 
-
 $navbar-color: #f1f1f1;
 $border-color: #ddd;
-$navbar-border-color: darken($navbar-color, 10%);
+$navbar-border-color: color.scale($navbar-color, $lightness: -10%);
 $navbar-height: 50px;
 
 $success: #1ccf16;

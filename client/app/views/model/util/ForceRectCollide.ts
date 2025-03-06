@@ -1,5 +1,4 @@
 import * as D3 from 'app/d3.bundle';
-import constant from 'd3-force/src/constant';
 
 interface RectCollideForce<NodeDatum extends D3.SimulationNodeDatum> extends D3.Force<any, undefined> {
   // size?(size?: number): this;
@@ -14,6 +13,8 @@ interface RectCollideForce<NodeDatum extends D3.SimulationNodeDatum> extends D3.
  */
 export function forceRectCollide<NodeDatum extends D3.SimulationNodeDatum> (): RectCollideForce<NodeDatum> {
   let nodes, sizes, masses;
+
+  const constant = (x: [number, number]) => () => x;
   let size: any = constant([0, 0]);
   let strength = 1;
   let iterations = 1;
@@ -23,7 +24,7 @@ export function forceRectCollide<NodeDatum extends D3.SimulationNodeDatum> (): R
     let i = -1;
     while (++i < iterations) {
       let j = -1;
-      let tree = D3.quadtree(nodes, xCenter, yCenter).visitAfter(prepare);
+      const tree = D3.quadtree(nodes, xCenter, yCenter).visitAfter(prepare);
 
       while (++j < nodes.length) {
         node = nodes[j];
@@ -37,20 +38,20 @@ export function forceRectCollide<NodeDatum extends D3.SimulationNodeDatum> (): R
     }
 
     function apply(quad, x0, y0, x1, y1) {
-      let data = quad.data;
-      let xSize = (size[0] + quad.size[0]) / 2;
-      let ySize = (size[1] + quad.size[1]) / 2;
+      const data = quad.data;
+      const xSize = (size[0] + quad.size[0]) / 2;
+      const ySize = (size[1] + quad.size[1]) / 2;
       if (data) {
         if (data.index <= node.index) { return; }
 
         let x = xi - xCenter(data);
         let y = yi - yCenter(data);
-        let xd = Math.abs(x) - xSize;
-        let yd = Math.abs(y) - ySize;
+        const xd = Math.abs(x) - xSize;
+        const yd = Math.abs(y) - ySize;
 
         if (xd < 0 && yd < 0) {
-          let l = Math.sqrt(x * x + y * y);
-          let m = masses[data.index] / (mass + masses[data.index]);
+          const l = Math.sqrt(x * x + y * y);
+          const m = masses[data.index] / (mass + masses[data.index]);
 
           if (Math.abs(xd) < Math.abs(yd)) {
             node.vx -= (x *= xd / l * strength) * m;

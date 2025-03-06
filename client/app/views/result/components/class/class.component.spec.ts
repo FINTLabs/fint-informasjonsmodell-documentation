@@ -59,8 +59,9 @@ describe('ClassComponent', () => {
 });
 
 @Component({
- selector  : 'test-cmp',
- template  : '<app-class [classification]="class"></app-class>'
+    selector: 'test-cmp',
+    template: '<app-class [classification]="class"></app-class>',
+    standalone: false
 })
 class TestComponentWrapper {
   class = {

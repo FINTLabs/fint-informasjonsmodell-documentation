@@ -4,9 +4,10 @@ import { Package } from 'app/EA/model/Package';
 import { Stereotype } from 'app/EA/model/Stereotype';
 
 @Component({
-  selector: 'app-stereotype',
-  templateUrl: './stereotype.component.html',
-  styleUrls: ['./stereotype.component.scss']
+    selector: 'app-stereotype',
+    templateUrl: './stereotype.component.html',
+    styleUrls: ['./stereotype.component.scss'],
+    standalone: false
 })
 export class StereotypeComponent implements OnInit {
   @Input() stereotype: Package;
