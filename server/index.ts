@@ -185,13 +185,7 @@ ${chalk.green('**********************')}
               if (!isARelease && isBRelease) { return a !== 'master' ? 1 : -1; }
               return a < b ? -1 : 1;
             })
-            .filter((a: string) => {
-              if (a === 'master') { return true; } // Include master branch
-              if (a === 'develop') { return true; } // Include develop branch
-              if (a.substring(0, 'release'.length) === 'release') { return true; } // Include release branches
-              if (a.substring(0, 'feature'.length) === 'feature') { return true; } // Include feature branches
-              return true; // For everything else
-            })
+            .filter((a: string) => !a.startsWith('dependabot'))
           );
         }
         Logger.log.error(err);

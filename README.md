@@ -8,3 +8,11 @@ This project is a frontend for Enterprise Architect XMI files and is build to do
 | GITHUB_ORGANISATION | Name of the GitHub organisation/user              | FINTprosjektet              |
 | GITHUB_REPO         | Name of the GitHub repository of the XMI document | fint-informasjonsmodell     |
 | EA_XMI_FILENAME     | Name of the XMI file                              | FINT-informasjonsmodell.xml |
+
+## Development
+
+To start locally run:
+
+```bash
+yarn run dev
+```
