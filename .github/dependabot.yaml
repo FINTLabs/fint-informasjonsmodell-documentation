@@ -1,0 +1,31 @@
+version: 2
+updates:
+  
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "npm"
+    ignore:
+      # Ignore major updates for Angular packages to avoid breaking changes
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
+    versioning-strategy: auto
+    groups:
+      angular-packages:
+        patterns:
+          - "@angular/*"
+        exclude-patterns:
+          - "@angular/cli"
+      dev-dependencies:
+        dependency-type: "development"
