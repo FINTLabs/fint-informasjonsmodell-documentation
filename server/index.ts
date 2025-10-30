@@ -235,7 +235,7 @@ ${chalk.green('**********************')}
     });
 
     // Setup base route to everything else
-    this.app.get('/*', (req: Express.Request, res: Express.Response) => {
+    this.app.use((req: Express.Request, res: Express.Response) => {
       res.sendFile(path.resolve(this.clientPath, 'index.html'));
     });
   }
