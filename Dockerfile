@@ -12,7 +12,7 @@ RUN rm -rf ./node_modules && yarn install && yarn build
 FROM node:18-alpine
 
 WORKDIR /usr/src/app
-COPY package.json /usr/src/app
+COPY package.json yarn.lock /usr/src/app/
 RUN yarn install --production
 COPY --from=builder /usr/src/app/dist/ /usr/src/app/dist/
 

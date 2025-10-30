@@ -16,3 +16,10 @@ To start locally run:
 ```bash
 yarn run dev
 ```
+
+Run with Docker locally:
+
+```bash
+docker build -t fint-info-doc .
+docker run --rm -p 3000:3000 fint-info-doc
+```
