@@ -31,7 +31,7 @@
     "@angular/router": "20.3.9",
     "@fortawesome/angular-fontawesome": "^1.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
-    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "chalk": "^2.2.0",
     "content-type": "^1.0.5",
     "core-js": "^3.46.0",
