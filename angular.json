@@ -38,6 +38,12 @@
             "browser": "client/main.ts"
           },
           "configurations": {
+            "development": {
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false,
+              "namedChunks": true
+            },
             "production": {
               "optimization": true,
               "outputHashing": "all",
