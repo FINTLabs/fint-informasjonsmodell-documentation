@@ -6,7 +6,7 @@ import * as fs from 'fs';
 // Express
 import * as http from 'http';
 import * as Express from 'express';
-import * as request from 'request';
+import axios from 'axios';
 
 // Express middlewares
 import * as morgan from 'morgan';
@@ -25,6 +25,10 @@ const parser = new xml2js.Parser();
 const GITHUB_ORGANISATION = process.env.GITHUB_ORGANISATION || 'FINTLabs';
 const GITHUB_REPOSITORY = process.env.GITHUB_REPO || 'fint-informasjonsmodell';
 const EA_XMI_FILENAME = process.env.EA_XMI_FILENAME || 'FINT-informasjonsmodell.xml';
+const GITHUB_DEFAULT_HEADERS = {
+  'User-Agent': 'NodeJS-Express',
+  'cache-control': 'no-cache'
+};
 
 /**
  * The server.
@@ -34,7 +38,7 @@ const EA_XMI_FILENAME = process.env.EA_XMI_FILENAME || 'FINT-informasjonsmodell.
 export class Server {
   public app: Express.Express;
   private port = parseInt(process.env.PORT || '3000', 10);
-  private clientPath = path.join(__dirname, './public');
+  private clientPath = path.join(__dirname, './public/browser');
 
 
   /**
@@ -119,108 +123,111 @@ ${chalk.green('**********************')}
 
     Logger.log.info(`https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases/latest`);
     // Read github latest version
-    this.app.get('/api/doc/latest', function (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
-      const options = {
-        method: 'GET',
-        url: `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases/latest`,
-        headers: { 'User-Agent': 'NodeJS-Express', 'cache-control': 'no-cache' }
-      };
-      request(options, function (err, response, body) {
-        if (err) {
-          Logger.log.error(err);
-          return res.status(500).send(err);
+    this.app.get('/api/doc/latest', async (req: Express.Request, res: Express.Response) => {
+      try {
+        const { data } = await axios.get(
+          `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases/latest`,
+          { headers: GITHUB_DEFAULT_HEADERS }
+        );
+        if (data && data.name) {
+          return res.send(data.name);
         }
-        const json = JSON.parse(body);
-        if (json.name) {
-          return res.send(json.name);
+        Logger.log.error('Unexpected response when fetching latest release', data);
+        return res.status(500).send(data);
+      } catch (error) {
+        Logger.log.error(error);
+        if (axios.isAxiosError(error) && error.response) {
+          return res.status(error.response.status).send(error.response.data);
         }
-        Logger.log.error(err);
-        return res.status(500).send(json);
-      });
+        return res.status(500).send(error);
+      }
     });
 
     // Read github version tags
-    this.app.get('/api/doc/versions', function (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
-      const options = {
-        method: 'GET',
-        url: `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases`,
-        headers: { 'User-Agent': 'NodeJS-Express', 'cache-control': 'no-cache' }
-      };
-      request(options, function (err, response, body) {
-        if (err) {
-          Logger.log.error(err);
-          return res.status(500).send(err);
+    this.app.get('/api/doc/versions', async (req: Express.Request, res: Express.Response) => {
+      try {
+        const { data } = await axios.get(
+          `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases`,
+          { headers: GITHUB_DEFAULT_HEADERS }
+        );
+        if (Array.isArray(data)) {
+          return res.send(data.map((r: any) => r.name));
         }
-        const json = JSON.parse(body);
-        if (Array.isArray(json)) {
-          return res.send(JSON.parse(body).map((r: any) => r.name));
+        Logger.log.error('Unexpected response when fetching release versions', data);
+        return res.status(500).send(data);
+      } catch (error) {
+        Logger.log.error(error);
+        if (axios.isAxiosError(error) && error.response) {
+          return res.status(error.response.status).send(error.response.data);
         }
-        Logger.log.error(err);
-        return res.status(500).send(json);
-      });
+        return res.status(500).send(error);
+      }
     });
 
     // Read github version tags
-    this.app.get('/api/doc/branches', function (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
-      const options = {
-        method: 'GET',
-        url: `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/branches`,
-        headers: { 'User-Agent': 'NodeJS-Express', 'cache-control': 'no-cache' }
-      };
-      request(options, function (err, response, body) {
-        if (err) {
-          Logger.log.error(err);
-          return res.status(500).send(err);
-        }
-        const json = JSON.parse(body);
-        if (Array.isArray(json)) {
-          return res.send(JSON.parse(body)
-            .map((r: any) => r.name)
-            .sort((a: string, b: string) => {
-              const isARelease = a.substring(0, 'release'.length) === 'release';
-              const isBRelease = b.substring(0, 'release'.length) === 'release';
+    this.app.get('/api/doc/branches', async (req: Express.Request, res: Express.Response) => {
+      try {
+        const { data } = await axios.get(
+          `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/branches`,
+          { headers: GITHUB_DEFAULT_HEADERS }
+        );
+        if (Array.isArray(data)) {
+          return res.send(
+            data
+              .map((r: any) => r.name)
+              .sort((a: string, b: string) => {
+                const isARelease = a.substring(0, 'release'.length) === 'release';
+                const isBRelease = b.substring(0, 'release'.length) === 'release';
 
-              if (a === 'master' || b === 'master') { return a === 'master' ? -1 : 1; }
-              if (isARelease && !isBRelease) { return b !== 'master' ? -1 : 1; }
-              if (!isARelease && isBRelease) { return a !== 'master' ? 1 : -1; }
-              return a < b ? -1 : 1;
-            })
-            .filter((a: string) => !a.startsWith('dependabot'))
+                if (a === 'master' || b === 'master') { return a === 'master' ? -1 : 1; }
+                if (isARelease && !isBRelease) { return b !== 'master' ? -1 : 1; }
+                if (!isARelease && isBRelease) { return a !== 'master' ? 1 : -1; }
+                return a < b ? -1 : 1;
+              })
+              .filter((a: string) => !a.startsWith('dependabot'))
           );
         }
-        Logger.log.error(err);
-        return res.status(500).send(json);
-      });
+        Logger.log.error('Unexpected response when fetching branches', data);
+        return res.status(500).send(data);
+      } catch (error) {
+        Logger.log.error(error);
+        if (axios.isAxiosError(error) && error.response) {
+          return res.status(error.response.status).send(error.response.data);
+        }
+        return res.status(500).send(error);
+      }
     });
 
     // Pipe traffic to fetch raw github content
-    this.app.get('/api/doc/:version', function (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
+    this.app.get('/api/doc/:version', async (req: Express.Request, res: Express.Response) => {
       const url = `https://raw.githubusercontent.com/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/${req.params.version}/${EA_XMI_FILENAME}`;
 
-      Logger.log.info("Fetching XMI-file: ", url);
+      Logger.log.info('Fetching XMI-file: ', url);
 
-      request({ url: url, encoding: null }, function (err, response, body) {
-        if (err) {
-          Logger.log.error(err);
-          return res.status(500).send(err);
-        }
-        if (response.statusCode === 200) {
-          const xml = Iconv.decode(body, 'win-1252');
+      try {
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        const xml = Iconv.decode(Buffer.from(response.data), 'win-1252');
 
-          // Map to JSON and return
+        return await new Promise<void>((resolve) => {
           parser.parseString(xml, function (parseError: any, result: any) {
             if (parseError) {
               Logger.log.error(parseError);
-              return res.status(500).send(parseError);
+              res.status(500).send(parseError);
+              resolve();
+              return;
             }
             res.header({ 'content-type': 'text/json; charset=utf-8' });
-            return res.send(result);
+            res.send(result);
+            resolve();
           });
-        } else {
-          return res.status(response.statusCode).send('Error fetching content');
+        });
+      } catch (error) {
+        Logger.log.error(error);
+        if (axios.isAxiosError(error) && error.response) {
+          return res.status(error.response.status).send(error.response.data || 'Error fetching content');
         }
         return res.status(500).send('Error fetching content');
-      });
+      }
     });
 
     this.app.get('/health', (req: Express.Request, res: Express.Response) => {

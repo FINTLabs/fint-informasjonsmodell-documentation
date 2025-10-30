@@ -4,5 +4,7 @@
       {{ stereotype.name }}
     </h2>
   </header>
-  <app-class *ngFor="let class of visibleClasses()" [classification]="class"></app-class>
+  @for (class of visibleClasses(); track class) {
+    <app-class [classification]="class"></app-class>
+  }
 </article>

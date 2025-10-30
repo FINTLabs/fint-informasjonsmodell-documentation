@@ -4,8 +4,10 @@
     <div (click)="toggleOpen()">
       <ng-content select="header"></ng-content>
     </div>
-    <div *ngIf="isOpen">
-      <ng-content></ng-content>
-    </div>
+    @if (isOpen) {
+      <div>
+        <ng-content></ng-content>
+      </div>
+    }
   </div>
 </section>

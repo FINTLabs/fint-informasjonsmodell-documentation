@@ -1,5 +1,5 @@
 # Fint Informasjonsmodell
-This project is a frontend for Enterprise Architect XMI files and is build to document the FINT information models. You can find the documentation portal [here](https://informasjonsmodell.felleskomponent.no/).
+This project is a frontend for Enterprise Architect XMI files and is build to document the FINT information models. You can find the documentation portal here: [informasjonsmodell.felleskomponent.no](https://informasjonsmodell.felleskomponent.no/). 
 
 ## Enviornment variables
 
@@ -15,4 +15,11 @@ To start locally run:
 
 ```bash
 yarn run dev
+```
+
+Run with Docker locally:
+
+```bash
+docker build -t fint-info-doc .
+docker run --rm -p 3000:3000 fint-info-doc
 ```

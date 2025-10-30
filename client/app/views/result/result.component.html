@@ -1,8 +1,11 @@
-<div *ngIf="isLoading != true && model">
-  <app-sidebar [stereotypes]="model"></app-sidebar>
-  <section>
-    <h1>Elementer i informasjonsmodellen</h1>
-
-    <app-stereotype *ngFor="let stereotype of visiblePackages()" [stereotype]="stereotype"></app-stereotype>
-  </section>
-</div>
+@if (isLoading != true && model) {
+  <div>
+    <app-sidebar [stereotypes]="model"></app-sidebar>
+    <section>
+      <h1>Elementer i informasjonsmodellen</h1>
+      @for (stereotype of visiblePackages(); track stereotype) {
+        <app-stereotype [stereotype]="stereotype"></app-stereotype>
+      }
+    </section>
+  </div>
+}

@@ -8,140 +8,184 @@
       <mat-card-title>
         <h3>
           <span [innerHTML]="classification.name | highlight:searchStr"></span>
-          <span *ngIf="classification.superType"
-                title="{{classification.name}} arver fra {{classification.superType.name}}">
-            <fa-icon icon="arrow-right"></fa-icon>
-            <mat-chip *ngIf="classification.superType">
-              <a [routerLink]="[ '/docs', classification.superType.id]" [queryParams]="classification.queryParams"
-                 [innerHTML]="classification.superType.name | highlight:searchStr"></a>
-            </mat-chip>
-          </span>
+          @if (classification.superType) {
+            <span
+              title="{{classification.name}} arver fra {{classification.superType.name}}">
+              <fa-icon icon="arrow-right"></fa-icon>
+              @if (classification.superType) {
+                <mat-chip>
+                  <a [routerLink]="[ '/docs', classification.superType.id]" [queryParams]="classification.queryParams"
+                  [innerHTML]="classification.superType.name | highlight:searchStr"></a>
+                </mat-chip>
+              }
+            </span>
+          }
           <small class="type" [innerHTML]="classification.typeDesc | highlight:searchStr"></small>
         </h3>
-        <div class="deprecatedDescription" *ngIf="classification.deprecated">
-          <mat-chip class="deprecatedChip">UTGÅR</mat-chip>
-          {{classification.deprecatedDescription}}
-        </div>
+        @if (classification.deprecated) {
+          <div class="deprecatedDescription">
+            <mat-chip class="deprecatedChip">UTGÅR</mat-chip>
+            {{classification.deprecatedDescription}}
+          </div>
+        }
       </mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-      <div class="subtypes" *ngIf="classification.subTypes && classification.subTypes.length">
-        <mat-chip-listbox selectable="false">
-          <mat-chip *ngFor="let cls of classification.subTypes">
-            <a [routerLink]="[ '/docs', cls.id]" [queryParams]="cls.queryParams"
-               [innerHTML]="cls.name | highlight:searchStr"></a>
-          </mat-chip>
-        </mat-chip-listbox>
-      </div>
+      @if (classification.subTypes && classification.subTypes.length) {
+        <div class="subtypes">
+          <mat-chip-listbox selectable="false">
+            @for (cls of classification.subTypes; track cls) {
+              <mat-chip>
+                <a [routerLink]="[ '/docs', cls.id]" [queryParams]="cls.queryParams"
+                [innerHTML]="cls.name | highlight:searchStr"></a>
+              </mat-chip>
+            }
+          </mat-chip-listbox>
+        </div>
+      }
 
-      <app-details *ngIf="classification.documentationBody.length > 0">
-        <header [innerHTML]="classification.documentationHeader"></header>
-        <span [innerHTML]="classification.documentationBody"></span>
-      </app-details>
-      <span [innerHTML]="classification.documentationHeader"
-            *ngIf="classification.documentationBody.length <= 0"></span>
+      @if (classification.documentationBody.length > 0) {
+        <app-details>
+          <header [innerHTML]="classification.documentationHeader"></header>
+          <span [innerHTML]="classification.documentationBody"></span>
+        </app-details>
+      }
+      @if (classification.documentationBody.length <= 0) {
+        <span [innerHTML]="classification.documentationHeader"
+        ></span>
+      }
 
-      <section *ngIf="attributes && attributes.length > 0">
-        <h3>Felter</h3>
-        <table>
-          <thead>
-          <tr>
-            <th class="dropdown"></th>
-            <th class="name">Felt</th>
-            <th class="type">Type</th>
-            <th class="multiplicity">Multiplisitet</th>
-            <th class="writable">Skrivbar</th>
-            <th class="description">Beskrivelse</th>
-          </tr>
-          </thead>
-          <tbody *ngFor="let attribute of attributes" [attr.id]="attribute.id"
-                 [ngClass]="{'inherited': attribute.parent != classification}"
-                 [title]="attribute.parent != classification ? 'Arvet fra ' + attribute.parent.name : ''">
-          <tr
-            [ngClass]="{hasDetailsBody: attribute.documentationBody.length > 0, hasDetails: attribute.documentationHeader.length > 0, isOpen: attribute.isOpen}">
-            <td class="dropdown" (click)="openAttribute(attribute)">
-              <fa-icon *ngIf="attribute.documentationHeader.length > 0" class="toggleMobileDetails"
-                  [icon]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
-              <fa-icon *ngIf="attribute.documentationBody.length > 0" class="toggleDetailBody"
-                  [icon]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
-            </td>
-            <td class="{{attribute.deprecated ? 'deprecated name' : 'name'}}"
-                [innerHTML]="attribute.name | highlight:searchStr" (click)="openAttribute(attribute)"></td>
-            <td class="{{attribute.deprecated ? 'deprecated type' : 'type'}}">
-              <span *ngIf="attribute.isPrimitive" [innerHTML]="attribute.typeName | highlight:searchStr"></span>
-              <a *ngIf="!attribute.isPrimitive && attribute.typeRef" [routerLink]="['/docs', attribute.typeRef.id]"
-                 [queryParams]="attribute.queryParams" [innerHTML]="attribute.typeName | highlight:searchStr"></a>
-            </td>
-            <td class="{{attribute.deprecated ? 'deprecated multiplicity' : 'multiplicity'}}"
-                (click)="openAttribute(attribute)">{{ attribute.multiplicity }}
-            </td>
-            <td class="{{attribute.deprecated ? 'deprecated writable' : 'writable'}}">
-              <fa-icon [icon]="'check'" fw="true" *ngIf="attribute.writable === true"></fa-icon>
-            </td>
-            <td class="description"
-                (click)="openAttribute(attribute)">
-              <i>{{ attribute.documentationHeader }}</i>
-            </td>
-          </tr>
-          <tr class="dropdown-row" *ngIf="attribute.isOpen && attribute.documentationHeader.length > 0">
-            <td colspan="6" class="details"><i>{{ attribute.documentationHeader }}</i></td>
-          </tr>
-          <tr *ngIf="attribute.isOpen && attribute.documentationBody.length > 0">
-            <td colspan="6" [innerHTML]="attribute.documentationBody" class="details"></td>
-          </tr>
-          </tbody>
-        </table>
-      </section>
+      @if (attributes && attributes.length > 0) {
+        <section>
+          <h3>Felter</h3>
+          <table>
+            <thead>
+              <tr>
+                <th class="dropdown"></th>
+                <th class="name">Felt</th>
+                <th class="type">Type</th>
+                <th class="multiplicity">Multiplisitet</th>
+                <th class="writable">Skrivbar</th>
+                <th class="description">Beskrivelse</th>
+              </tr>
+            </thead>
+            @for (attribute of attributes; track attribute) {
+              <tbody [attr.id]="attribute.id"
+                [ngClass]="{'inherited': attribute.parent != classification}"
+                [title]="attribute.parent != classification ? 'Arvet fra ' + attribute.parent.name : ''">
+                <tr
+                  [ngClass]="{hasDetailsBody: attribute.documentationBody.length > 0, hasDetails: attribute.documentationHeader.length > 0, isOpen: attribute.isOpen}">
+                  <td class="dropdown" (click)="openAttribute(attribute)">
+                    @if (attribute.documentationHeader.length > 0) {
+                      <fa-icon class="toggleMobileDetails"
+                      [icon]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
+                    }
+                    @if (attribute.documentationBody.length > 0) {
+                      <fa-icon class="toggleDetailBody"
+                      [icon]="attribute.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
+                    }
+                  </td>
+                  <td class="{{attribute.deprecated ? 'deprecated name' : 'name'}}"
+                  [innerHTML]="attribute.name | highlight:searchStr" (click)="openAttribute(attribute)"></td>
+                  <td class="{{attribute.deprecated ? 'deprecated type' : 'type'}}">
+                    @if (attribute.isPrimitive) {
+                      <span [innerHTML]="attribute.typeName | highlight:searchStr"></span>
+                    }
+                    @if (!attribute.isPrimitive && attribute.typeRef) {
+                      <a [routerLink]="['/docs', attribute.typeRef.id]"
+                      [queryParams]="attribute.queryParams" [innerHTML]="attribute.typeName | highlight:searchStr"></a>
+                    }
+                  </td>
+                  <td class="{{attribute.deprecated ? 'deprecated multiplicity' : 'multiplicity'}}"
+                    (click)="openAttribute(attribute)">{{ attribute.multiplicity }}
+                  </td>
+                  <td class="{{attribute.deprecated ? 'deprecated writable' : 'writable'}}">
+                    @if (attribute.writable === true) {
+                      <fa-icon [icon]="'check'" fw="true"></fa-icon>
+                    }
+                  </td>
+                  <td class="description"
+                    (click)="openAttribute(attribute)">
+                    <i>{{ attribute.documentationHeader }}</i>
+                  </td>
+                </tr>
+                @if (attribute.isOpen && attribute.documentationHeader.length > 0) {
+                  <tr class="dropdown-row">
+                    <td colspan="6" class="details"><i>{{ attribute.documentationHeader }}</i></td>
+                  </tr>
+                }
+                @if (attribute.isOpen && attribute.documentationBody.length > 0) {
+                  <tr>
+                    <td colspan="6" [innerHTML]="attribute.documentationBody" class="details"></td>
+                  </tr>
+                }
+              </tbody>
+            }
+          </table>
+        </section>
+      }
 
-      <section *ngIf="associations && associations.length > 0">
-        <h3>Relasjoner</h3>
-        <table>
-          <thead>
-          <tr>
-            <th class="dropdown"></th>
-            <th class="name">Felt</th>
-            <th class="type">Type</th>
-            <th class="multiplicity">Multiplisitet</th>
-            <th class="description">Beskrivelse</th>
-          </tr>
-          </thead>
-          <tbody *ngFor="let association of associations" [attr.id]="association.id"
-                 [ngClass]="{'inherited': association.parent != classification}"
-                 [title]="association.parent != classification ? 'Arvet fra ' + association.parent.name : ''">
-          <tr
-            [ngClass]="{hasDetailsBody: association.end.documentationBody.length > 0, hasDetails: association.end.documentationHeader.length > 0, isOpen: association.isOpen}">
-            <td class="dropdown" (click)="openAssociation(association)">
-              <fa-icon *ngIf="association.end.documentationHeader.length > 0" class="toggleMobileDetails"
-                  [icon]="association.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
-              <fa-icon *ngIf="association.end.documentationBody.length > 0" class="toggleDetailBody"
-                  [icon]="association.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
-            </td>
-            <td class="{{associationDeprecated(association) ? 'deprecated name' : 'name'}}"
-                [innerHTML]="association.end.label | highlight:searchStr" (click)="openAssociation(association)"></td>
-            <td class="{{associationDeprecated(association) ? 'deprecated type' : 'type'}}">
-              <a [routerLink]="['/docs', association.end.reference.id]"
-                 [queryParams]="classification.queryParams"
-                 [innerHTML]="association.end.reference.name | highlight:searchStr">
-              </a>
-            </td>
-            <td class="{{associationDeprecated(association) ? 'deprecated multiplicity' : 'multiplicity'}}"
-                (click)="openAssociation(association)">{{ association.end.multiplicity }}
-            </td>
-            <td class="description"
-                (click)="openAssociation(association)">
-              {{ associationDeprecated(association) ? associationDeprecatedDescription(association) : association.end.documentationHeader }}
-            </td>
-          </tr>
-          <tr class="dropdown-row" *ngIf="association.isOpen && association.end.documentationHeader.length > 0">
-            <td colspan="5" class="details"><i>{{ association.end.documentationHeader }}</i></td>
-          </tr>
-          <tr *ngIf="association.isOpen && association.end.documentationBody.length > 0">
-            <td colspan="5" [innerHTML]="associationDeprecated(association) ? association.end.documentationBody + associationDeprecatedDescription(association) : association.end.documentationBody" class="details"></td>
-          </tr>
-          </tbody>
-        </table>
-      </section>
+      @if (associations && associations.length > 0) {
+        <section>
+          <h3>Relasjoner</h3>
+          <table>
+            <thead>
+              <tr>
+                <th class="dropdown"></th>
+                <th class="name">Felt</th>
+                <th class="type">Type</th>
+                <th class="multiplicity">Multiplisitet</th>
+                <th class="description">Beskrivelse</th>
+              </tr>
+            </thead>
+            @for (association of associations; track association) {
+              <tbody [attr.id]="association.id"
+                [ngClass]="{'inherited': association.parent != classification}"
+                [title]="association.parent != classification ? 'Arvet fra ' + association.parent.name : ''">
+                <tr
+                  [ngClass]="{hasDetailsBody: association.end.documentationBody.length > 0, hasDetails: association.end.documentationHeader.length > 0, isOpen: association.isOpen}">
+                  <td class="dropdown" (click)="openAssociation(association)">
+                    @if (association.end.documentationHeader.length > 0) {
+                      <fa-icon class="toggleMobileDetails"
+                      [icon]="association.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
+                    }
+                    @if (association.end.documentationBody.length > 0) {
+                      <fa-icon class="toggleDetailBody"
+                      [icon]="association.isOpen ? 'caret-down' : 'caret-right'"></fa-icon>
+                    }
+                  </td>
+                  <td class="{{associationDeprecated(association) ? 'deprecated name' : 'name'}}"
+                  [innerHTML]="association.end.label | highlight:searchStr" (click)="openAssociation(association)"></td>
+                  <td class="{{associationDeprecated(association) ? 'deprecated type' : 'type'}}">
+                    <a [routerLink]="['/docs', association.end.reference.id]"
+                      [queryParams]="classification.queryParams"
+                      [innerHTML]="association.end.reference.name | highlight:searchStr">
+                    </a>
+                  </td>
+                  <td class="{{associationDeprecated(association) ? 'deprecated multiplicity' : 'multiplicity'}}"
+                    (click)="openAssociation(association)">{{ association.end.multiplicity }}
+                  </td>
+                  <td class="description"
+                    (click)="openAssociation(association)">
+                    {{ associationDeprecated(association) ? associationDeprecatedDescription(association) : association.end.documentationHeader }}
+                  </td>
+                </tr>
+                @if (association.isOpen && association.end.documentationHeader.length > 0) {
+                  <tr class="dropdown-row">
+                    <td colspan="5" class="details"><i>{{ association.end.documentationHeader }}</i></td>
+                  </tr>
+                }
+                @if (association.isOpen && association.end.documentationBody.length > 0) {
+                  <tr>
+                    <td colspan="5" [innerHTML]="associationDeprecated(association) ? association.end.documentationBody + associationDeprecatedDescription(association) : association.end.documentationBody" class="details"></td>
+                  </tr>
+                }
+              </tbody>
+            }
+          </table>
+        </section>
+      }
 
     </mat-card-content>
   </mat-card>

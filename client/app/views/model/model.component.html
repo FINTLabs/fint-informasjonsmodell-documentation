@@ -10,14 +10,18 @@
           <fa-icon icon="thumb-tack"></fa-icon>
         </label>
         <ul class="unstyled">
-          <li *ngFor="let cls of types">
-            <div [className]="'box ' + cls.type">{{ cls.name }}</div>
-          </li>
+          @for (cls of types; track cls) {
+            <li>
+              <div [className]="'box ' + cls.type">{{ cls.name }}</div>
+            </li>
+          }
         </ul>
         <ul class="unstyled">
-          <li *ngFor="let cls of lines">
-            <div [className]="'box ' + cls.type">{{ cls.name }}</div>
-          </li>
+          @for (cls of lines; track cls) {
+            <li>
+              <div [className]="'box ' + cls.type">{{ cls.name }}</div>
+            </li>
+          }
         </ul>
       </div>
 
@@ -31,26 +35,32 @@
               </label>
             </div>
           </li>
-          <li *ngFor="let type of legend">
-            <div [class]="'box ' + type.xmiId" [style]="type.fill" (mouseenter)="findHull(type.xmiId)"
-                 (mouseleave)="clearHull()">
-              <label>
-                <input type="checkbox" name="activePacakge" [(ngModel)]="type.active">
-                {{ type.name }}
-              </label>
-            </div>
-            <ul class="unstyled" *ngIf="type.colors">
-              <li *ngFor="let col of type.colors">
-                <div [class]="'box ' + col.xmiId" [style]="col.fill" (mouseenter)="findHull(col.xmiId)"
-                     (mouseleave)="clearHull()">
-                  <label>
-                    <input type="checkbox" name="activePacakge" [(ngModel)]="col.active">
-                    {{ col.name }}
-                  </label>
-                </div>
-              </li>
-            </ul>
-          </li>
+          @for (type of legend; track type) {
+            <li>
+              <div [class]="'box ' + type.xmiId" [style]="type.fill" (mouseenter)="findHull(type.xmiId)"
+                (mouseleave)="clearHull()">
+                <label>
+                  <input type="checkbox" name="activePacakge" [(ngModel)]="type.active">
+                  {{ type.name }}
+                </label>
+              </div>
+              @if (type.colors) {
+                <ul class="unstyled">
+                  @for (col of type.colors; track col) {
+                    <li>
+                      <div [class]="'box ' + col.xmiId" [style]="col.fill" (mouseenter)="findHull(col.xmiId)"
+                        (mouseleave)="clearHull()">
+                        <label>
+                          <input type="checkbox" name="activePacakge" [(ngModel)]="col.active">
+                          {{ col.name }}
+                        </label>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              }
+            </li>
+          }
         </ul>
       </div>
 
