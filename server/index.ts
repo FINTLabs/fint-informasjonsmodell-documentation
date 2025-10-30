@@ -38,7 +38,7 @@ const GITHUB_DEFAULT_HEADERS = {
 export class Server {
   public app: Express.Express;
   private port = parseInt(process.env.PORT || '3000', 10);
-  private clientPath = path.join(__dirname, './public');
+  private clientPath = path.join(__dirname, './public/browser');
 
 
   /**

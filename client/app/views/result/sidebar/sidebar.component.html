@@ -1,25 +1,39 @@
 <aside>
   <ul>
-    <li *ngFor="let stereotype of stereotypes" [className]="stereotype.isActive ? 'active' : ''">
-      <a [routerLink]="['/docs', stereotype.id]" [queryParams]="stereotype.queryParams">{{ stereotype.name }}</a>
-      <h5>Abstrakt</h5>
-      <ul *ngIf="stereotype.allClasses | classSort">
-        <li *ngFor="let clazz of stereotype.allClasses | classAbstract" [className]="clazz.isActive ? 'active' : ''">
-          <a [routerLink]="['/docs', clazz.id]" [queryParams]="clazz.queryParams">{{ clazz.name }}</a>
-        </li>
-      </ul>
-      <h5>Hovedklasse</h5>
-      <ul *ngIf="stereotype.allClasses">
-        <li *ngFor="let clazz of stereotype.allClasses | classMain" [className]="clazz.isActive ? 'active' : ''">
-          <a [routerLink]="['/docs', clazz.id]" [queryParams]="clazz.queryParams">{{ clazz.name }}</a>
-        </li>
-      </ul>
-      <h5>Kompleks datatype</h5>
-      <ul *ngIf="stereotype.allClasses">
-        <li *ngFor="let clazz of stereotype.allClasses | complexDatatype" [className]="clazz.isActive ? 'active' : ''">
-          <a [routerLink]="['/docs', clazz.id]" [queryParams]="clazz.queryParams">{{ clazz.name }}</a>
-        </li>
-      </ul>
-    </li>
+    @for (stereotype of stereotypes; track stereotype) {
+      <li [className]="stereotype.isActive ? 'active' : ''">
+        <a [routerLink]="['/docs', stereotype.id]" [queryParams]="stereotype.queryParams">{{ stereotype.name }}</a>
+        <h5>Abstrakt</h5>
+        @if (stereotype.allClasses | classSort) {
+          <ul>
+            @for (clazz of stereotype.allClasses | classAbstract; track clazz) {
+              <li [className]="clazz.isActive ? 'active' : ''">
+                <a [routerLink]="['/docs', clazz.id]" [queryParams]="clazz.queryParams">{{ clazz.name }}</a>
+              </li>
+            }
+          </ul>
+        }
+        <h5>Hovedklasse</h5>
+        @if (stereotype.allClasses) {
+          <ul>
+            @for (clazz of stereotype.allClasses | classMain; track clazz) {
+              <li [className]="clazz.isActive ? 'active' : ''">
+                <a [routerLink]="['/docs', clazz.id]" [queryParams]="clazz.queryParams">{{ clazz.name }}</a>
+              </li>
+            }
+          </ul>
+        }
+        <h5>Kompleks datatype</h5>
+        @if (stereotype.allClasses) {
+          <ul>
+            @for (clazz of stereotype.allClasses | complexDatatype; track clazz) {
+              <li [className]="clazz.isActive ? 'active' : ''">
+                <a [routerLink]="['/docs', clazz.id]" [queryParams]="clazz.queryParams">{{ clazz.name }}</a>
+              </li>
+            }
+          </ul>
+        }
+      </li>
+    }
   </ul>
 </aside>
