@@ -16,4 +16,4 @@ COPY package.json /usr/src/app
 RUN yarn install --production
 COPY --from=builder /usr/src/app/dist/ /usr/src/app/dist/
 
-CMD npm start
+CMD yarn start
