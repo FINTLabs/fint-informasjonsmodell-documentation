@@ -18,9 +18,15 @@ export namespace Logger {
   function formatter(logEntry: any) {
     // Remove ansi coloring from log entries
     const regexp = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
+    const rawMessage = typeof logEntry.message === 'string'
+      ? logEntry.message
+      : logEntry.message && typeof logEntry.message.message === 'string'
+        ? logEntry.message.message
+        : JSON.stringify(logEntry.message ?? '');
+
     return JSON.stringify({
       level: logEntry.level,
-      message: logEntry.message.replace(regexp, ''),
+      message: rawMessage.replace(regexp, ''),
       timestamp: new Date().toISOString()
     });
   }
