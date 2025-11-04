@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - onepassword.yaml
 
 patches:
   - target:
