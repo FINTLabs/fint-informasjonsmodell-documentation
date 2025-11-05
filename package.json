@@ -4,21 +4,21 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "ng": "ng",
-    "dev": "npm run server:build && npm run client:build:dev && concurrently --kill-others \"npm run server:build:watch\" \"npm run server:watch\" \"npm run client:build:watch\"",
+    "dev": "concurrently --kill-others 'yarn run server:build:watch' 'yarn run server:watch' 'yarn run client:build:watch'",
     "clean": "rm -rf dist node_modules",
-    "start": "npm run server",
-    "build": "npm run ng --version && npm run server:build && npm run client:build",
+ 
+    "build": "yarn run server:build && yarn run client:build",
+    "start": "yarn run server",    
+    
     "server": "node ./dist/server/index.js",
     "server:watch": "nodemon --watch dist/server --delay 0.2 --exec node dist/server/index.js",
-    "server:compile": "tsc --project ./server/tsconfig.json",
-    "server:copy-package": "cp server/package.json dist/server/package.json",
-    "server:build": "npm run server:compile && npm run server:copy-package",
-    "server:build:watch": "npm run server:compile -- -w",
+    "server:build": "tsc --project ./server/tsconfig.json",
+    "server:build:watch": "yarn run server:build -- -w",
+    
     "client": "ng serve --proxy-config proxy.conf.json",
     "client:build": "ng build --configuration=production",
-    "client:build:dev": "ng build --configuration=development --output-path=dist/public",
     "client:build:watch": "ng build --configuration=development --output-path=dist/public --watch",
+    
     "test": "ng test",
     "lint": "eslint \"**/*.{ts,tsx}\" --fix"
   },
