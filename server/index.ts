@@ -2,33 +2,98 @@
 import * as path from 'path';
 import chalk from 'chalk';
 import * as fs from 'fs';
+import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
 
 // Express
 import * as http from 'http';
-import * as Express from 'express';
+import express from 'express';
+import type { Application, Request, Response, NextFunction } from 'express';
 import axios from 'axios';
+import { App as GitHubApp } from '@octokit/app';
 
 // Express middlewares
-import * as morgan from 'morgan';
+import morgan from 'morgan';
 import helmet from 'helmet';
 import { parse as contentTypeParser } from 'content-type';
 
 // Other
-import { Logger } from './utils/Logger';
-import { ERROR_MESSAGES } from './messages';
-import * as Iconv from 'iconv-lite';
+import { Logger } from './utils/Logger.js';
+import { ERROR_MESSAGES } from './messages.js';
+import Iconv from 'iconv-lite';
 
+const require = createRequire(import.meta.url);
 const favicon = require('serve-favicon');
 const xml2js = require('xml2js');
 const parser = new xml2js.Parser();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const GITHUB_ORGANISATION = process.env.GITHUB_ORGANISATION || 'FINTLabs';
 const GITHUB_REPOSITORY = process.env.GITHUB_REPO || 'fint-informasjonsmodell';
 const EA_XMI_FILENAME = process.env.EA_XMI_FILENAME || 'FINT-informasjonsmodell.xml';
-const GITHUB_DEFAULT_HEADERS = {
+const GITHUB_APP_ID = process.env.GITHUB_APP_ID;
+const GITHUB_INSTALLATION_ID = process.env.GITHUB_INSTALLATION_ID;
+const GITHUB_APP_PRIVATE_KEY = process.env.GITHUB_APP_PRIVATE_KEY;
+
+const BASE_GITHUB_HEADERS: Record<string, string> = {
   'User-Agent': 'NodeJS-Express',
   'cache-control': 'no-cache'
 };
+
+let githubApp: GitHubApp | undefined;
+
+function getGitHubAppInstance(): GitHubApp | undefined {
+  if (!GITHUB_APP_ID || !GITHUB_INSTALLATION_ID || !GITHUB_APP_PRIVATE_KEY) {
+    return undefined;
+  }
+
+  if (!githubApp) {
+    githubApp = new GitHubApp({
+      appId: Number(GITHUB_APP_ID),
+      privateKey: GITHUB_APP_PRIVATE_KEY
+    });
+  }
+
+  return githubApp;
+}
+
+let cachedInstallationToken: { value: string; expiresAt: number } | undefined;
+
+async function ensureGitHubToken(): Promise<string | undefined> {
+  const app = getGitHubAppInstance();
+  if (app) {
+    const now = Date.now();
+    if (cachedInstallationToken && cachedInstallationToken.expiresAt - 60_000 > now) {
+      return cachedInstallationToken.value;
+    }
+
+    const { data } = await app.octokit.request('POST /app/installations/{installation_id}/access_tokens', {
+      installation_id: Number(GITHUB_INSTALLATION_ID)
+    });
+
+    cachedInstallationToken = {
+      value: data.token,
+      expiresAt: Date.parse(data.expires_at)
+    };
+
+    return cachedInstallationToken.value;
+  }
+
+  return undefined;
+}
+
+async function getGitHubHeaders(): Promise<Record<string, string>> {
+  const token = await ensureGitHubToken();
+  if (token) {
+    return {
+      ...BASE_GITHUB_HEADERS,
+      Authorization: `Bearer ${token}`
+    };
+  }
+  return { ...BASE_GITHUB_HEADERS };
+}
 
 /**
  * The server.
@@ -36,9 +101,9 @@ const GITHUB_DEFAULT_HEADERS = {
  * @class Server
  */
 export class Server {
-  public app: Express.Express;
+  public app: Application;
   private port = parseInt(process.env.PORT || '3000', 10);
-  private clientPath = path.join(__dirname, './public/browser');
+  private clientPath = path.join(__dirname, '../public/browser');
 
 
   /**
@@ -65,11 +130,8 @@ ${chalk.green('**********************')}
    * Constructor.
    */
   constructor() {
-    const appPath = path.resolve(__dirname);
-    const me = this;
-
     // Setup ExpressJS application
-    this.app = Express();
+    this.app = express();
 
     // Setup security middleware
     this.app.use(helmet({
@@ -84,7 +146,7 @@ ${chalk.green('**********************')}
     }));
 
     // Strict content-type checking middleware
-    this.app.use((req, res, next) => {
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
       const contentType = req.headers['content-type'];
       if (!contentType) {
         return next();
@@ -98,7 +160,7 @@ ${chalk.green('**********************')}
     });
 
     // Strict content-length checking middleware
-    this.app.use((req, res, next) => {
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
       const len = req.headers['content-length'];
       if (!len || /^\d+$/.test(len)) {
         return next();
@@ -115,7 +177,7 @@ ${chalk.green('**********************')}
     this.app.set('trust proxy', true);  // Listen for external requests
 
     // Setup static resources
-    this.app.use(Express.static(this.clientPath));                    // Serve static paths
+    this.app.use(express.static(this.clientPath));                    // Serve static paths
     const faviconPath = path.join(this.clientPath, 'favicon.ico');
     if (fs.existsSync(path.resolve(faviconPath))) {
       this.app.use(favicon(faviconPath)); // Serve favicon
@@ -123,12 +185,14 @@ ${chalk.green('**********************')}
 
     Logger.log.info(`https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases/latest`);
     // Read github latest version
-    this.app.get('/api/doc/latest', async (req: Express.Request, res: Express.Response) => {
+    this.app.get('/api/doc/latest', async (req: Request, res: Response) => {
       try {
-        const { data } = await axios.get(
+        const headers = await getGitHubHeaders();
+        const response = await axios.get(
           `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases/latest`,
-          { headers: GITHUB_DEFAULT_HEADERS }
+          { headers }
         );
+        const { data } = response;
         if (data && data.name) {
           return res.send(data.name);
         }
@@ -144,12 +208,14 @@ ${chalk.green('**********************')}
     });
 
     // Read github version tags
-    this.app.get('/api/doc/versions', async (req: Express.Request, res: Express.Response) => {
+    this.app.get('/api/doc/versions', async (req: Request, res: Response) => {
       try {
-        const { data } = await axios.get(
+        const headers = await getGitHubHeaders();
+        const response = await axios.get(
           `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/releases`,
-          { headers: GITHUB_DEFAULT_HEADERS }
+          { headers }
         );
+        const { data } = response;
         if (Array.isArray(data)) {
           return res.send(data.map((r: any) => r.name));
         }
@@ -165,12 +231,14 @@ ${chalk.green('**********************')}
     });
 
     // Read github version tags
-    this.app.get('/api/doc/branches', async (req: Express.Request, res: Express.Response) => {
+    this.app.get('/api/doc/branches', async (req: Request, res: Response) => {
       try {
-        const { data } = await axios.get(
+        const headers = await getGitHubHeaders();
+        const response = await axios.get(
           `https://api.github.com/repos/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/branches`,
-          { headers: GITHUB_DEFAULT_HEADERS }
+          { headers }
         );
+        const { data } = response;
         if (Array.isArray(data)) {
           return res.send(
             data
@@ -199,13 +267,14 @@ ${chalk.green('**********************')}
     });
 
     // Pipe traffic to fetch raw github content
-    this.app.get('/api/doc/:version', async (req: Express.Request, res: Express.Response) => {
+    this.app.get('/api/doc/:version', async (req: Request, res: Response) => {
       const url = `https://raw.githubusercontent.com/${GITHUB_ORGANISATION}/${GITHUB_REPOSITORY}/${req.params.version}/${EA_XMI_FILENAME}`;
 
       Logger.log.info('Fetching XMI-file: ', url);
 
       try {
-        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        const headers = await getGitHubHeaders();
+        const response = await axios.get(url, { responseType: 'arraybuffer', headers });
         const xml = Iconv.decode(Buffer.from(response.data), 'win-1252');
 
         return await new Promise<void>((resolve) => {
@@ -230,12 +299,12 @@ ${chalk.green('**********************')}
       }
     });
 
-    this.app.get('/health', (req: Express.Request, res: Express.Response) => {
+    this.app.get('/health', (req: Request, res: Response) => {
       res.send();
     });
 
     // Setup base route to everything else
-    this.app.use((req: Express.Request, res: Express.Response) => {
+    this.app.use((req: Request, res: Response) => {
       res.sendFile(path.resolve(this.clientPath, 'index.html'));
     });
   }
@@ -260,7 +329,7 @@ ${chalk.green('**********************')}
     Logger.log.info("Github org: " + GITHUB_ORGANISATION);
     Logger.log.info("Gitrepo org: " + GITHUB_REPOSITORY);
     Logger.log.info("XML file: " + EA_XMI_FILENAME);
-
+    Logger.log.info("Github app ID: " + GITHUB_APP_ID);
   }
 
   /**
