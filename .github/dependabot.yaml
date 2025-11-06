@@ -16,10 +16,6 @@ updates:
     labels:
       - "dependencies"
       - "npm"
-    ignore:
-      # Ignore major updates for Angular packages to avoid breaking changes
-      - dependency-name: "@angular/*"
-        update-types: ["version-update:semver-major"]
     versioning-strategy: auto
     groups:
       angular-packages:
