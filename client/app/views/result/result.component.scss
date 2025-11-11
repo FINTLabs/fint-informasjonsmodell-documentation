@@ -1,4 +1,5 @@
-@use "../../../variables" as *;
+@use "sass:color";
+@use "../../../styles/variables" as *;
 
 app-sidebar {
   position: fixed;
@@ -10,5 +11,25 @@ app-sidebar {
   + section {
     margin-left: 18rem;
     margin-right: 1rem;
+  }
+}
+
+.error-state {
+  margin: 2rem auto;
+  max-width: 40rem;
+  padding: 2rem;
+  border-radius: $rounded;
+  border: 1px solid color.scale($warning, $lightness: 10%);
+  background: rgba($warning, 0.08);
+  color: color.scale($text-color, $lightness: -10%);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: color.scale($warning, $lightness: -10%);
+  }
+
+  p {
+    margin: 0;
   }
 }
