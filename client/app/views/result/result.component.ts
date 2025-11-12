@@ -1,7 +1,9 @@
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { InViewService } from './in-view.service';
 import { ModelService } from 'app/EA/model.service';
@@ -15,6 +17,7 @@ import { Model } from 'app/EA/model/Model';
 })
 export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
   model = null;
+  errorMessage: string | null = null;
   versionChangedSubscription: Subscription;
   routeParamsSubscription: Subscription;
   queryParamsSubscription: Subscription;
@@ -65,11 +68,28 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private loadData() {
     const me = this;
+    me.errorMessage = null;
+    me.model = null;
     me.isLoading = true;
-    this.modelService.fetchModel().subscribe(model => {
-      me.model = me.modelService.getTopPackages();
-      me.isLoading = false;
-    });
+    this.modelService.fetchModel()
+      .pipe(finalize(() => {
+        me.isLoading = false;
+      }))
+      .subscribe({
+        next: () => {
+          me.model = me.modelService.getTopPackages();
+        },
+        error: (error: HttpErrorResponse) => {
+          const version = this.modelService.version;
+          if (error?.status === 404) {
+            me.errorMessage = version
+              ? `Fant ikke versjonen "${version}". Velg en annen versjon.`
+              : 'Fant ikke valgt versjon. Velg en annen versjon.';
+          } else {
+            me.errorMessage = 'Kunne ikke laste dokumentasjonen. Prøv igjen senere.';
+          }
+        }
+      });
   }
 
   private goto(id, force?: boolean): boolean {

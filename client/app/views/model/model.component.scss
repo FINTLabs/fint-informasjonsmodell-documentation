@@ -11,7 +11,48 @@
     width: 100%;
     height: 100%;
   }
-}*/
+}
+*/
+
+.model-wrapper {
+  position: relative;
+  min-height: calc(100vh - $navbar-height);
+}
+
+.diagram-content.hidden {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.error-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba($navbar-color, 0.9);
+  z-index: 1100;
+}
+
+.error-state {
+  max-width: 40rem;
+  padding: 2rem;
+  border-radius: $rounded;
+  border: 1px solid color.scale($warning, $lightness: 10%);
+  background: rgba($warning, 0.08);
+  color: color.scale($text-color, $lightness: -10%);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: color.scale($warning, $lightness: -10%);
+  }
+
+  p {
+    margin: 0;
+  }
+}
 
 .legend {
   overflow: auto;

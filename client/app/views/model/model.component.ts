@@ -2,6 +2,8 @@ import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, V
 import {DomSanitizer, SafeStyle, Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import * as D3 from 'app/d3.bundle';
 import {forceRectCollide} from './util/ForceRectCollide';
@@ -133,23 +135,44 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadData() {
     const me = this;
+    this.errorMessage = null;
     this.isLoading = true;
     if (this.simulation) {
       this.simulation.stop();
     }
-    this.modelService.fetchModel().subscribe(model => {
-      // Reset
-      me.resetLegend();
-      // me.colorsFlat = [];
-      // me.legend = [];
-      me.links = null;
-      me.hull = null;
-      me.nodes = null;
+    this.modelService.fetchModel()
+      .pipe(finalize(() => {
+        me.isLoading = false;
+      }))
+      .subscribe({
+        next: model => {
+          // Reset
+          me.resetLegend();
+          // me.colorsFlat = [];
+          // me.legend = [];
+          me.links = null;
+          me.hull = null;
+          me.nodes = null;
 
-      me.model = model;
-      me.render();
-      me.isLoading = false;
-    });
+          me.model = model;
+          me.render();
+        },
+        error: (error: HttpErrorResponse) => {
+          me.model = null;
+          const version = this.modelService.version;
+          if (error?.status === 404) {
+            me.errorMessage = version
+              ? `Fant ikke versjonen "${version}". Velg en annen versjon.`
+              : 'Fant ikke valgt versjon. Velg en annen versjon.';
+          } else {
+            me.errorMessage = 'Kunne ikke laste modellen. Prøv igjen senere.';
+          }
+
+          if (me.host) {
+            me.host.html('');
+          }
+        }
+      });
   }
 
   // ###########################################
@@ -568,6 +591,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
   colorsFlat: ILegendItem[] = [];
   legend = [];
   setActiveTimeout;
+
+  errorMessage: string | null = null;
 
   get allActive() {
     return !this.colorsFlat.some(c => !c.active);

@@ -1,4 +1,10 @@
-@if (isLoading != true && model) {
+@if (errorMessage) {
+  <div class="error-state" role="alert">
+    <h2>Kunne ikke laste dokumentasjonen</h2>
+    <p>{{ errorMessage }}</p>
+  </div>
+}
+@if (!errorMessage && isLoading != true && model) {
   <div>
     <app-sidebar [stereotypes]="model"></app-sidebar>
     <section>

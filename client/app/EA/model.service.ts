@@ -181,7 +181,14 @@ export class ModelService {
             me.modelReject();
           }
         }),
-        catchError(error => this.handleError(error))
+        catchError(error => {
+          me.modelObservable = null;
+          if (me.modelReject) {
+            me.modelReject(error);
+          }
+          me.hasModel = me.createModelPromise();
+          return this.handleError(error);
+        })
       );
     }
     return me.modelObservable;
