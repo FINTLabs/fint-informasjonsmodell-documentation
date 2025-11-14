@@ -41,18 +41,17 @@ jobs:
 
   
   deploy-beta:
-    uses: ./.github/workflows/reusable-deploy.yaml
     needs: build-and-publish
+    uses: ./.github/workflows/reusable-deploy.yaml
     with:
       tags: ${{ needs.build-and-publish.outputs.tags }}
-      deploy-every-branch: true
       environment: beta
+      deploy-every-branch: true
     secrets: inherit
 
   deploy-prod:
-    if: github.actor != 'dependabot[bot]'
-    uses: ./.github/workflows/reusable-deploy.yaml
     needs: deploy-beta
+    uses: ./.github/workflows/reusable-deploy.yaml
     with:
       tags: ${{ needs.build-and-publish.outputs.tags }}
       environment: api
