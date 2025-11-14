@@ -40,8 +40,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   
-  call-deploy-beta:
+  deploy-beta:
     uses: ./.github/workflows/reusable-deploy.yaml
+    needs: build-and-publish
     with:
       cluster: aks-beta-fint-2021-11-23
       tags: ${{ needs.build-and-publish.outputs.tags }}
@@ -49,9 +50,10 @@ jobs:
       environment: beta
     secrets: inherit
 
-  call-deploy-prod:
+  deploy-prod:
     if: github.actor != 'dependabot[bot]'
     uses: ./.github/workflows/reusable-deploy.yaml
+    needs: deploy-beta
     with:
       cluster: aks-api-fint-2022-02-08
       tags: ${{ needs.build-and-publish.outputs.tags }}
