@@ -16,4 +16,4 @@ COPY package.json yarn.lock /usr/src/app/
 RUN yarn install --production --frozen-lockfile
 COPY --from=builder /usr/src/app/dist/ /usr/src/app/dist/
 
-CMD yarn start
+CMD ["yarn", "start"]
