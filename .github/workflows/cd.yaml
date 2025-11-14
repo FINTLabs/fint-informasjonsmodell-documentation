@@ -44,7 +44,6 @@ jobs:
     uses: ./.github/workflows/reusable-deploy.yaml
     needs: build-and-publish
     with:
-      cluster: aks-beta-fint-2021-11-23
       tags: ${{ needs.build-and-publish.outputs.tags }}
       deploy-every-branch: true
       environment: beta
@@ -55,7 +54,6 @@ jobs:
     uses: ./.github/workflows/reusable-deploy.yaml
     needs: deploy-beta
     with:
-      cluster: aks-api-fint-2022-02-08
       tags: ${{ needs.build-and-publish.outputs.tags }}
       environment: api
     secrets: inherit

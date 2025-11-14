@@ -8,9 +8,6 @@ on:
       environment:
         required: true
         type: string
-      cluster:
-        required: true
-        type: string
       deploy-every-branch:
         required: false
         type: boolean
@@ -18,35 +15,30 @@ on:
 
 jobs:
   deploy-to-aks:
-    name: deploy-${{ inputs.cluster }}
+    name: ${{ inputs.environment }}
     environment: ${{ inputs.environment }}
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) || inputs.deploy-every-branch == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
 
-      - name: Get environment
-        id: environment
-        run: |
-          echo "name=$(cut -d\- -f2 <<< ${{ inputs.cluster }})" >> $GITHUB_OUTPUT
-
       - name: Bake manifests with Kustomize
         id: bake
         uses: azure/k8s-bake@v3
         with:
           renderEngine: 'kustomize'
-          kustomizationPath: 'kustomize/overlays/${{ steps.environment.outputs.name }}'
+          kustomizationPath: 'kustomize/overlays/${{ input.environment }}'
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', steps.environment.outputs.name)] }}"
+          creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', input.environment)] }}"
 
       - name: Set the target cluster
         uses: azure/aks-set-context@v4
         with:
-          cluster-name: ${{ inputs.cluster }}
-          resource-group: rg-aks-${{ steps.environment.outputs.name }}
+          cluster-name: ${{ vars.cluster }}
+          resource-group: rg-aks-${{ input.environment }}
           admin: true
 
       - name: Get namespace from config file
