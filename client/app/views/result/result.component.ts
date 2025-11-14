@@ -86,7 +86,7 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
               ? `Fant ikke versjonen "${version}". Velg en annen versjon.`
               : 'Fant ikke valgt versjon. Velg en annen versjon.';
           } else {
-            me.errorMessage = 'Kunne ikke laste dokumentasjonen. Prøv igjen senere.';
+            me.errorMessage = 'Kunne ikke laste informasjonsmodellen. Prøv igjen senere.';
           }
         }
       });
