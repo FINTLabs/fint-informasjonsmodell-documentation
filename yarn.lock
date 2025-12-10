@@ -345,10 +345,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/forms@20.3.10":
-  version "20.3.10"
-  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-20.3.10.tgz#28245e514f7d53d9f8956ff37003346fa71491d8"
-  integrity sha512-9yWr51EUauTEINB745AaHwZNTHLpXIm4uxuykxzOg+g2QskEgVfH26uS8G2ogdNuwYpB8wnsXWr34qhM3qgOWw==
+"@angular/forms@20.3.12":
+  version "20.3.12"
+  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-20.3.12.tgz#05b3db947563b292e9b79a3be3f9b1e5e6419d02"
+  integrity sha512-O0Jy8ScaN3qVipDfR4s0SIxGrz/+MbCdmR05ZYVWf1W5P3dvETKt9WNjX9fYYV47GdgSveyFjuCR2NvWlv94zA==
   dependencies:
     tslib "^2.3.0"
 
