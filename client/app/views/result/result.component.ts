@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -21,16 +21,20 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
   versionChangedSubscription: Subscription;
   routeParamsSubscription: Subscription;
   queryParamsSubscription: Subscription;
+  _isLoading = false;
 
-  get isLoading() { return this.modelService.isLoading; }
-  set isLoading(flag) { this.modelService.isLoading = flag; }
+  get isLoading() { return this._isLoading; }
+  set isLoading(flag) { 
+    this._isLoading = flag;
+  }
 
   constructor(
     private modelService: ModelService,
     private route: ActivatedRoute,
     private router: Router,
     private titleService: Title,
-    private InView: InViewService
+    private InView: InViewService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   visiblePackages() {
@@ -40,7 +44,7 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.titleService.setTitle('Docs | Fint');
-    this.isLoading = true;
+    this._isLoading = true;
     this.versionChangedSubscription = this.modelService.versionChanged.subscribe(v => this.loadData());
     this.loadData(); // Initial load
   }
@@ -70,10 +74,11 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
     const me = this;
     me.errorMessage = null;
     me.model = null;
-    me.isLoading = true;
+    me._isLoading = true;
     this.modelService.fetchModel()
       .pipe(finalize(() => {
-        me.isLoading = false;
+        me._isLoading = false;
+        me.cdr.detectChanges();
       }))
       .subscribe({
         next: () => {
