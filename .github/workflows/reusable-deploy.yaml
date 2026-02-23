@@ -15,7 +15,7 @@ on:
 
 jobs:
   deploy-to-aks:
-    name: ${{ inputs.environment }}
+    name: deploy
     environment: ${{ inputs.environment }}
     if: >-
       github.actor != 'dependabot[bot]' &&

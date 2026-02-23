@@ -40,7 +40,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   
-  deploy-beta:
+  beta:
     needs: build-and-publish
     uses: ./.github/workflows/reusable-deploy.yaml
     with:
@@ -49,8 +49,8 @@ jobs:
       deploy-every-branch: true
     secrets: inherit
 
-  deploy-prod:
-    needs: deploy-beta
+  prod:
+    needs: [ build-and-publish, beta ]
     uses: ./.github/workflows/reusable-deploy.yaml
     with:
       tags: ${{ needs.build-and-publish.outputs.tags }}
