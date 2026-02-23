@@ -1,5 +1,4 @@
 import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -24,9 +23,7 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
   _isLoading = false;
 
   get isLoading() { return this._isLoading; }
-  set isLoading(flag) { 
-    this._isLoading = flag;
-  }
+  set isLoading(flag) { this._isLoading = flag; }
 
   constructor(
     private modelService: ModelService,
@@ -44,9 +41,8 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.titleService.setTitle('Docs | Fint');
-    this._isLoading = true;
     this.versionChangedSubscription = this.modelService.versionChanged.subscribe(v => this.loadData());
-    this.loadData(); // Initial load
+    this.loadData();
   }
 
   ngAfterViewInit() {
@@ -75,16 +71,18 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
     me.errorMessage = null;
     me.model = null;
     me._isLoading = true;
+    me.modelService.isLoading = true;
     this.modelService.fetchModel()
-      .pipe(finalize(() => {
-        me._isLoading = false;
-        me.cdr.detectChanges();
-      }))
       .subscribe({
         next: () => {
           me.model = me.modelService.getTopPackages();
+          me._isLoading = false;
+          me.modelService.isLoading = false;
+          setTimeout(() => me.cdr.detectChanges(), 0);
         },
         error: (error: HttpErrorResponse) => {
+          me._isLoading = false;
+          me.modelService.isLoading = false;
           const version = this.modelService.version;
           if (error?.status === 404) {
             me.errorMessage = version
@@ -93,6 +91,7 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
           } else {
             me.errorMessage = 'Kunne ikke laste Informasjonsmodellen. Prøv igjen senere.';
           }
+          setTimeout(() => me.cdr.detectChanges(), 0);
         }
       });
   }
