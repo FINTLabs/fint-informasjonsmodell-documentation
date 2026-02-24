@@ -1,6 +1,6 @@
 ######################
 ### STAGE 1: Build ###
-FROM node:22-alpine AS builder
+FROM node:25-alpine AS builder
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
@@ -9,7 +9,7 @@ RUN rm -rf ./node_modules && yarn install --frozen-lockfile && yarn build
 
 ######################
 ### STAGE 2: Setup ###
-FROM node:22-alpine
+FROM node:25-alpine
 
 WORKDIR /usr/src/app
 COPY package.json yarn.lock /usr/src/app/
