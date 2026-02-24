@@ -29,7 +29,7 @@
     "@angular/platform-browser": "21.1.5",
     "@angular/platform-browser-dynamic": "21.1.5",
     "@angular/router": "21.1.5",
-    "@fortawesome/angular-fontawesome": "^3.0.0",
+    "@fortawesome/angular-fontawesome": "^4.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@octokit/app": "^16.1.2",
