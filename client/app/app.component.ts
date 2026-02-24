@@ -1,6 +1,6 @@
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Model } from './EA/model/Model';
 import { ModelService } from './EA/model.service';
@@ -53,8 +53,7 @@ export class AppComponent {
     private modelService: ModelService,
     private router: Router,
     private route: ActivatedRoute,
-    private titleService: Title,
-    private cdr: ChangeDetectorRef
+    private titleService: Title
   ) {
     this.titleService.setTitle('FINT');
     this.modelService.versionChanged.subscribe(v => this.selectedRepo = v);
@@ -62,17 +61,13 @@ export class AppComponent {
       if (params.s) { this.searchValue = params.s; }
       if (params.v) { this.modelService.version = params.v; }
     });
-    this.modelService.fetchVersions().subscribe(r => {
-      this.repos.releases = r;
-      this.cdr.detectChanges();
-    });
+    this.modelService.fetchVersions().subscribe(r => this.repos.releases =  r);
     this.modelService.fetchBranches().subscribe(r => {
       if (r.length) {
         this.repos.branches = r;
       } else {
         delete this.repos.branches;
       }
-      this.cdr.detectChanges();
     });
   }
 }
