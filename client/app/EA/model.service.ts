@@ -33,7 +33,7 @@ export class ModelService {
   _isLoading = false;
   get isLoading() { return this._isLoading; }
   set isLoading(v) {
-    setTimeout(() => this._isLoading = v);
+    this._isLoading = v;
   }
 
   public defaultVersion: string;
@@ -156,7 +156,6 @@ export class ModelService {
   fetchModel(): Observable<any> {
     const me = this;
 
-    // me.isLoading = true;
     if (!me.modelObservable) {
       if (!this.version) {
         return empty();

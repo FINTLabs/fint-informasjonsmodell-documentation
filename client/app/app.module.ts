@@ -10,6 +10,7 @@ import {
   faBars, faPuzzlePiece, faForward, faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideZoneChangeDetection } from '@angular/core';
 
 // import { LibSharedModule } from 'fint-shared-components';
 import { AppRoutingModule } from './app-routing.module';
@@ -39,8 +40,11 @@ import { MarkdownToHtmlPipe } from './EA/mapper/MarkdownToHtml.pipe';
         ResultModule
       ], 
       providers: [
+        provideZoneChangeDetection({ eventCoalescing: true }),
         ModelService, 
-        ModelStateService, provideHttpClient(withInterceptorsFromDi())]
+        ModelStateService, 
+        provideHttpClient(withInterceptorsFromDi())
+      ]
     })
 
 
