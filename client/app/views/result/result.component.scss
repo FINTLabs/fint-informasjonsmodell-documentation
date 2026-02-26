@@ -1,6 +1,10 @@
 @use "sass:color";
 @use "../../../styles/variables" as *;
 
+h1 {
+  padding-top: 1.5rem;
+}
+
 app-sidebar {
   position: fixed;
   top: 51px;

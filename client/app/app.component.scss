@@ -8,7 +8,7 @@ nav {
   right: 0;
   left: 0;
   z-index: 1030;
-  background: $navbar-color;
+  background: #f8f4e3;
   height: $navbar-height;
   padding: 0 1rem;
   border-color: $navbar-border-color;
@@ -29,6 +29,17 @@ nav {
     height: $navbar-height;
     a {
       height: $navbar-height;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      span {
+        color: #6B133D;
+        margin: 0;
+        padding: 0 3rem 0 0;
+        font-size: 1.3rem;
+        font-weight: 900;
+        text-transform: none;
+      }
     }
   }
   svg {
@@ -36,8 +47,7 @@ nav {
     fill-opacity:1;
     fill-rule:nonzero;
     stroke:none;
-    width: 7rem;
-    //transition: width 0.2s ease-out;
+    width: 10rem;
   }
   a {
     color: $text-color;
