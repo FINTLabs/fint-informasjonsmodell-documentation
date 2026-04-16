@@ -53,10 +53,10 @@
     "zone.js": "0.16.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "21.2.2",
-    "@angular/cli": "21.2.2",
-    "@angular/compiler": "21.2.4",
-    "@angular/compiler-cli": "21.2.4",
+    "@angular-devkit/build-angular": "21.2.7",
+    "@angular/cli": "21.2.7",
+    "@angular/compiler": "21.2.9",
+    "@angular/compiler-cli": "21.2.9",
     "@types/content-type": "^1.1.9",
     "@types/d3": "7.4.3",
     "@types/d3-dsv": "^3.0.7",
@@ -65,15 +65,15 @@
     "@types/helmet": "^4.0.0",
     "@types/jasmine": "6.0.0",
     "@types/morgan": "^1.9.10",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.6.0",
     "@types/serve-favicon": "2.5.7",
     "@types/xml2js": "^0.4.14",
-    "@typescript-eslint/eslint-plugin": "^8.57.0",
-    "@typescript-eslint/parser": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.2",
+    "@typescript-eslint/parser": "^8.58.2",
     "concurrently": "^9.2.1",
-    "eslint": "^10.0.3",
+    "eslint": "^10.2.0",
     "glob": "^13.0.6",
-    "jasmine-core": "6.1.0",
+    "jasmine-core": "6.2.0",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
@@ -82,10 +82,10 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "nodemon": "3.1.14",
     "rimraf": "^6.1.0",
-    "sass": "1.98.0",
+    "sass": "1.99.0",
     "ts-helpers": "1.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
