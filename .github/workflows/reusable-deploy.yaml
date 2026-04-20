@@ -53,7 +53,7 @@ jobs:
           echo "name=$namespace" >> $GITHUB_OUTPUT
 
       - name: Deploy to Kubernetes
-        uses: azure/k8s-deploy@v5
+        uses: azure/k8s-deploy@v6
         with:
           action: deploy
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
