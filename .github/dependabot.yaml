@@ -21,7 +21,5 @@ updates:
       angular-packages:
         patterns:
           - "@angular/*"
-        exclude-patterns:
-          - "@angular/cli"
       dev-dependencies:
         dependency-type: "development"
