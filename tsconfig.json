@@ -2,7 +2,6 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
-    "baseUrl": "./client",
     "mapRoot": "./client",
     "esModuleInterop": true,
     "sourceMap": true,
@@ -11,15 +10,23 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ES2022",
+    "strict": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
     "typeRoots": [
       "node_modules/@types"
     ],
     "paths": {
+      "app/*": [
+        "./client/app/*"
+      ],
       "@angular/*": [
-        "../node_modules/@angular/*"
+        "./client/../node_modules/@angular/*"
       ],
       "rxjs/*": [
-        "../node_modules/rxjs/*"
+        "./client/../node_modules/rxjs/*"
       ]
     },
     "module": "ES2022"
