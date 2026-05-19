@@ -1,4 +1,4 @@
-# Fint Informasjonsmodell
+# Fint Informasjonsmodell-dokumentasjon
 This project is a frontend for Enterprise Architect XMI files and is build to document the FINT information models. You can find the documentation portal here: [informasjonsmodell.felleskomponent.no](https://informasjonsmodell.felleskomponent.no/). 
 
 ## Enviornment variables
