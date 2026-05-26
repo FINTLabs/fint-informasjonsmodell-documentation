@@ -41,7 +41,7 @@
     "d3-scale-chromatic": "^3.0.0",
     "express": "^5.2.1",
     "font-awesome": "4.7.0",
-    "helmet": "^8.1.0",
+    "helmet": "^8.2.0",
     "iconv-lite": "^0.7.0",
     "marked": "18.0.4",
     "mkdirp": "3.0.1",
