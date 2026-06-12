@@ -32,13 +32,25 @@ ul {
       background-color: rgba(0, 0, 0, 0.06);
       border-bottom: 2px solid rgba(0, 0, 0, 0.1);
       margin-bottom: 8px;
-      cursor: pointer;
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
+      .header-link {
+        flex: 1;
+        color: $text-color;
+        text-decoration: none;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.04);
+        }
       }
-      .collapse-icon {
+      .collapse-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px 10px;
         font-size: 0.7em;
         color: rgba(0, 0, 0, 0.5);
+        transition: color 0.2s ease;
+        &:hover {
+          color: rgba(0, 0, 0, 0.8);
+        }
       }
     }
     a {
