@@ -21,6 +21,26 @@ ul {
       margin-top: 0px;
       margin-bottom: 0;
     }
+    .main-header {
+      color: $text-color;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      font-weight: 700;
+      font-size: 1.1em;
+      background-color: rgba(0, 0, 0, 0.06);
+      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+      margin-bottom: 8px;
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+      .collapse-icon {
+        font-size: 0.7em;
+        color: rgba(0, 0, 0, 0.5);
+      }
+    }
     a {
       color: $text-color;
       display: block;

@@ -11,6 +11,7 @@ import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 export class SidebarComponent implements AfterViewInit, OnDestroy {
   @Input() stereotypes: any[] = null;
   onScrollSubscription: Subscription;
+  collapsedStereotypes: { [key: string]: boolean } = {};
   constructor(private InView: InViewService) { }
 
 
@@ -30,5 +31,13 @@ export class SidebarComponent implements AfterViewInit, OnDestroy {
       type.isActive = me.InView.isElmInView(document.getElementById(type.id));
       type.allClasses.forEach(cls => cls.isActive = me.InView.isElmInView(document.getElementById(cls.id)));
     });
+  }
+
+  toggleStereotype(stereotypeId: string) {
+    this.collapsedStereotypes[stereotypeId] = !this.collapsedStereotypes[stereotypeId];
+  }
+
+  isStereotypeCollapsed(stereotypeId: string): boolean {
+    return this.collapsedStereotypes[stereotypeId] || false;
   }
 }
