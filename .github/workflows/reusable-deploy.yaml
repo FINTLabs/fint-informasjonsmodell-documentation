@@ -31,6 +31,7 @@ jobs:
         id: manifest
         run: |
           kubectl kustomize kustomize/overlays/${{ inputs.environment }} > ./manifest.yaml
+          echo "path=./manifest.yaml" >> $GITHUB_OUTPUT
 
       - name: Login to Azure
         uses: azure/login@v3
