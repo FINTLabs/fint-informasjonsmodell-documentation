@@ -28,11 +28,9 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Bake manifests with Kustomize
-        id: bake
-        uses: azure/k8s-bake@v4
-        with:
-          renderEngine: 'kustomize'
-          kustomizationPath: 'kustomize/overlays/${{ inputs.environment }}'
+        id: manifest
+        run: |
+          kubectl kustomize kustomize/overlays/${{ inputs.environment }} > ./manifest.yaml
 
       - name: Login to Azure
         uses: azure/login@v3
@@ -49,13 +47,13 @@ jobs:
       - name: Get namespace from config file
         id: namespace
         run: |
-          namespace=$(yq '.metadata.namespace' ${{ steps.bake.outputs.manifestsBundle }} | head -n 1 | sed 's/^null$/default/')
+          namespace=$(yq '.metadata.namespace' ${{ steps.manifest.outputs.path }} | head -n 1 | sed 's/^null$/default/')
           echo "name=$namespace" >> $GITHUB_OUTPUT
 
       - name: Deploy to Kubernetes
         uses: azure/k8s-deploy@v7
         with:
           action: deploy
-          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          manifests: ${{ steps.manifest.outputs.path }}
           images: ${{ inputs.tags }}
           namespace: ${{ steps.namespace.outputs.name }}
