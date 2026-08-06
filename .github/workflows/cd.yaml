@@ -8,7 +8,7 @@ concurrency:
 
 jobs:
 
-  build-and-publish:
+  build-push:
     runs-on: ubuntu-latest
     outputs:
       tags: ${{ steps.meta.outputs.tags }}
@@ -43,21 +43,20 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  
   beta:
-    needs: build-and-publish
-    uses: ./.github/workflows/reusable-deploy.yaml
+    needs: build-push
+    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
     with:
-      tags: ${{ needs.build-and-publish.outputs.tags }}
+      tags: ${{ needs.build-push.outputs.tags }}
       environment: beta
       deploy-every-branch: true
     secrets: inherit
 
   prod:
-    needs: [ build-and-publish, beta ]
-    uses: ./.github/workflows/reusable-deploy.yaml
+    needs: [ build-push, beta ]
+    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
     with:
-      tags: ${{ needs.build-and-publish.outputs.tags }}
+      tags: ${{ needs.build-push.outputs.tags }}
       environment: api
     secrets: inherit
 
