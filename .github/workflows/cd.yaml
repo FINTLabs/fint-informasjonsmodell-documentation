@@ -13,12 +13,12 @@ permissions:
 jobs:
 
   build-push:
-    uses: fintlabs/shared-workflows/.github/workflows/docker-build-push.yaml@main
+    uses: fintlabs/shared-workflows/.github/workflows/docker-build-push.yaml@v0
     secrets: inherit
 
   beta:
     needs: build-push
-    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
+    uses: fintlabs/shared-workflows/.github/workflows/kustomize-deploy.yaml@v0
     with:
       tags: ${{ needs.build-push.outputs.tags }}
       environment: beta
@@ -27,7 +27,7 @@ jobs:
 
   prod:
     needs: [ build-push, beta ]
-    uses: fintlabs/shared-workflows/.github/workflows/java-kustomize-deploy.yaml@main
+    uses: fintlabs/shared-workflows/.github/workflows/kustomize-deploy.yaml@v0
     with:
       tags: ${{ needs.build-push.outputs.tags }}
       environment: api
