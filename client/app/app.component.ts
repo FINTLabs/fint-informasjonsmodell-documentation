@@ -29,12 +29,6 @@ export class AppComponent {
   }
 
   get isLoading() { return this.modelService.isLoading; }
-  // set isLoading(flag) {
-  //   if (flag != null && flag !== this.modelService.isLoading) {
-  //     this.modelService.isLoading = flag;
-  //     this.cdr.detectChanges();
-  //   }
-  // }
 
   get model(): Model { return this.modelService.model; }
   get queryParams() { return this.modelService.queryParams; }
@@ -57,10 +51,8 @@ export class AppComponent {
     private cdr: ChangeDetectorRef
   ) {
     this.titleService.setTitle('FINT');
-    this.modelService.versionChanged.subscribe(v => {
-      this.selectedRepo = v;
-      this.cdr.detectChanges();
-    });
+    this.modelService.versionChanged.subscribe(v => this.selectedRepo = v);
+    this.modelService.loadingChanged.subscribe(() => this.cdr.detectChanges());
     this.route.queryParams.subscribe((params: any) => {
       if (params.s) { this.searchValue = params.s; }
       if (params.v) { this.modelService.version = params.v; }

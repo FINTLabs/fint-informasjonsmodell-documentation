@@ -43,13 +43,9 @@
   <section class="pull-right">
     <form class="form">
       <select [(ngModel)]="selectedRepo" [ngModelOptions]="{standalone: true}" [disabled]="isLoading">
-        @for (ver of repoKeys; track ver) {
-          <optgroup [label]="ver">
-            @for (rep of repos[ver]; track rep) {
-              <option [ngValue]="rep">{{ rep }}</option>
-            }
-          </optgroup>
-        }
+        <optgroup *ngFor="let ver of repoKeys" [label]="ver">
+          <option *ngFor="let rep of repos[ver]" [ngValue]="rep">{{ rep }}</option>
+        </optgroup>
       </select>
     </form>
     <div class="form">
@@ -59,10 +55,8 @@
 </nav>
 
 <section>
-  @if (isLoading) {
-    <div class="mat-spinner-container">
-      <mat-spinner class="center"></mat-spinner>
-    </div>
-  }
+  <div class="mat-spinner-container" *ngIf="isLoading">
+    <mat-spinner class="center"></mat-spinner>
+  </div>
   <router-outlet></router-outlet>
 </section>

@@ -80,6 +80,7 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe({
         next: () => {
           me.model = me.modelService.getTopPackages();
+          me.cdr.detectChanges();
         },
         error: (error: HttpErrorResponse) => {
           const version = this.modelService.version;

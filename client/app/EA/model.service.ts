@@ -31,9 +31,11 @@ import { Stereotype } from './model/Stereotype';
 export class ModelService {
   mapper: IMapper;
   _isLoading = false;
+  public loadingChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
   get isLoading() { return this._isLoading; }
   set isLoading(v) {
     this._isLoading = v;
+    this.loadingChanged.emit(v);
   }
 
   public defaultVersion: string;
@@ -102,7 +104,7 @@ export class ModelService {
    *
    * @memberOf ModelService
    */
-  constructor(protected http: HttpClient,  protected sanitizer: DomSanitizer) {
+  constructor(protected http: HttpClient, protected sanitizer: DomSanitizer) {
     EABaseClass.service = this;
   }
 
@@ -273,7 +275,7 @@ export class ModelService {
   }
 
   getTopPackages(from?: any): any[] {
-    return this.model.stereotypes;
+    return this.model ? this.model.stereotypes : [];
   }
 
   getObjectById(id) {

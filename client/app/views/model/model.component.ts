@@ -158,6 +158,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
 
           me.model = model;
           me.render();
+          me.cdr.detectChanges();
         },
         error: (error: HttpErrorResponse) => {
           me.model = null;

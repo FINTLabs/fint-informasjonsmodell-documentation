@@ -9,8 +9,7 @@ import {
   faThumbtack, faCaretRight, faArrowRight, faCaretDown, faTable, faListAlt, faIdCard,
   faBars, faPuzzlePiece, faForward, faCheck
 } from '@fortawesome/free-solid-svg-icons';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideZoneChangeDetection } from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 // import { LibSharedModule } from 'fint-shared-components';
 import { AppRoutingModule } from './app-routing.module';
@@ -40,10 +39,9 @@ import { MarkdownToHtmlPipe } from './EA/mapper/MarkdownToHtml.pipe';
         ResultModule
       ], 
       providers: [
-        provideZoneChangeDetection({ eventCoalescing: true }),
         ModelService, 
         ModelStateService, 
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withInterceptorsFromDi(), withXhr())
       ]
     })
 
