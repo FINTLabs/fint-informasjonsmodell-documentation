@@ -1,4 +1,4 @@
-import { ApplicationRef, EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError, catchError, tap, map, empty } from 'rxjs';
@@ -31,12 +31,11 @@ import { Stereotype } from './model/Stereotype';
 export class ModelService {
   mapper: IMapper;
   _isLoading = false;
+  public loadingChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
   get isLoading() { return this._isLoading; }
   set isLoading(v) {
-    setTimeout(() => {
-      this._isLoading = v;
-      this.appRef.components[0].changeDetectorRef.detectChanges();
-    });
+    this._isLoading = v;
+    this.loadingChanged.emit(v);
   }
 
   public defaultVersion: string;
@@ -105,7 +104,7 @@ export class ModelService {
    *
    * @memberOf ModelService
    */
-  constructor(protected http: HttpClient, protected sanitizer: DomSanitizer, private appRef: ApplicationRef) {
+  constructor(protected http: HttpClient, protected sanitizer: DomSanitizer) {
     EABaseClass.service = this;
   }
 
