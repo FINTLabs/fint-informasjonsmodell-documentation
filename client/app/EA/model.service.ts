@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { ApplicationRef, EventEmitter, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError, catchError, tap, map, empty } from 'rxjs';
@@ -33,7 +33,10 @@ export class ModelService {
   _isLoading = false;
   get isLoading() { return this._isLoading; }
   set isLoading(v) {
-    this._isLoading = v;
+    setTimeout(() => {
+      this._isLoading = v;
+      this.appRef.components[0].changeDetectorRef.detectChanges();
+    });
   }
 
   public defaultVersion: string;
@@ -102,7 +105,7 @@ export class ModelService {
    *
    * @memberOf ModelService
    */
-  constructor(protected http: HttpClient,  protected sanitizer: DomSanitizer) {
+  constructor(protected http: HttpClient, protected sanitizer: DomSanitizer, private appRef: ApplicationRef) {
     EABaseClass.service = this;
   }
 
@@ -273,7 +276,7 @@ export class ModelService {
   }
 
   getTopPackages(from?: any): any[] {
-    return this.model.stereotypes;
+    return this.model ? this.model.stereotypes : [];
   }
 
   getObjectById(id) {
