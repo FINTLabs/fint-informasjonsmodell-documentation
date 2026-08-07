@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeStyle, Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
@@ -106,7 +106,8 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private titleService: Title,
     private sanitizer: DomSanitizer,
-    private state: ModelStateService
+    private state: ModelStateService,
+    private cdr: ChangeDetectorRef
   ) {
   }
 
@@ -143,6 +144,7 @@ export class ModelComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modelService.fetchModel()
       .pipe(finalize(() => {
         me.isLoading = false;
+        me.cdr.detectChanges();
       }))
       .subscribe({
         next: model => {

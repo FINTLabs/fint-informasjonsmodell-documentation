@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -30,7 +30,8 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private titleService: Title,
-    private InView: InViewService
+    private InView: InViewService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   visiblePackages() {
@@ -74,6 +75,7 @@ export class ResultComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modelService.fetchModel()
       .pipe(finalize(() => {
         me.isLoading = false;
+        me.cdr.detectChanges();
       }))
       .subscribe({
         next: () => {
