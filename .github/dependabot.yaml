@@ -8,8 +8,6 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
-    assignees:
-      - "fintlabs/informasjonslaget"
 
   - package-ecosystem: "npm"
     directory: "/"
@@ -29,5 +27,3 @@ updates:
           - "*"
         exclude-patterns:
           - "typescript"
-    assignees:
-      - "fintlabs/informasjonslaget"
