@@ -23,3 +23,7 @@ updates:
           - "@angular/*"
       dev-dependencies:
         dependency-type: "development"
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "typescript"
