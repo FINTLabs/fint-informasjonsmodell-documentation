@@ -36,7 +36,7 @@
     "axios": "^1.20.0",
     "chalk": "^6.0.1",
     "content-type": "^3.1.1",
-    "core-js": "^3.49.0",
+    "core-js": "^3.51.0",
     "d3": "^7.8.5",
     "d3-scale-chromatic": "^3.0.0",
     "express": "^5.3.0",
