@@ -53,7 +53,7 @@
     "zone.js": "^0.16.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "22.2.3",
+    "@angular-devkit/build-angular": "22.2.4",
     "@angular/cli": "22.2.4",
     "@angular/compiler": "^22.2.3",
     "@angular/compiler-cli": "^22.2.3",
@@ -68,8 +68,8 @@
     "@types/node": "^26.6.5",
     "@types/serve-favicon": "2.5.7",
     "@types/xml2js": "^0.4.14",
-    "@typescript-eslint/eslint-plugin": "^8.71.2",
-    "@typescript-eslint/parser": "^8.71.2",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
     "concurrently": "^10.0.6",
     "eslint": "^10.13.0",
     "glob": "^13.0.6",
@@ -82,7 +82,7 @@
     "karma-jasmine-html-reporter": "^2.3.0",
     "nodemon": "3.1.14",
     "rimraf": "^6.1.0",
-    "sass": "^1.105.2",
+    "sass": "^1.106.1",
     "ts-helpers": "1.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
