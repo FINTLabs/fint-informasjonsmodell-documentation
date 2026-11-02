@@ -15,8 +15,8 @@ This project is a frontend for Enterprise Architect XMI files and is build to do
 To start locally run:
 
 ```bash
-yarn install
-yarn run dev
+npm install
+npm run dev
 ```
 
 Run with Docker locally:
