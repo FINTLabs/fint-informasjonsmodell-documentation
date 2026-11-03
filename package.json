@@ -85,7 +85,7 @@
     "sass": "^1.107.0",
     "ts-helpers": "1.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "overrides": {
     "brace-expansion": "^5.0.12",
