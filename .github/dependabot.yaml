@@ -2,6 +2,10 @@ version: 2
 updates:
   
   - package-ecosystem: "github-actions"
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -10,6 +14,10 @@ updates:
       - "github-actions"
 
   - package-ecosystem: "npm"
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -17,18 +25,12 @@ updates:
       - "dependencies"
       - "npm"
     versioning-strategy: auto
-    groups:
-      angular-packages:
-        patterns:
-          - "@angular/*"
-      dev-dependencies:
-        dependency-type: "development"
-        patterns:
-          - "*"
-        exclude-patterns:
-          - "typescript"
 
   - package-ecosystem: "docker"
+    groups:
+      docker-dependencies:
+        patterns:
+          - "*"
     directory: "/"
     schedule:
       interval: "weekly"
